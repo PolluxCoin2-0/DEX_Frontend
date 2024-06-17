@@ -19,34 +19,43 @@ const SwapForm = () => {
   const [showRecipient, setShowRecipient] = useState(false);
   const [slippage, setSlippage] = useState("");
   const [customSlippage, setCustomSlippage] = useState("");
+  const [deadLine, setDeadLine] = useState("");
+  const [customDeadLine, setCustomDeadLine] = useState("");
   const [swapArrowState, setSwapArrowState] = useState(true);
   const [debouncedAmount, setDebouncedAmount] = useState(fromAmount);
   const [bothTokenSelected, setBothTokenSelected] = useState(false);
 
-  // Handle input change with debounce
-  const handleFromAmountChange = (e) => {
-    setFromAmount(e.target.value);
+ // Handle input change with debounce
+ const handleFromAmountChange = (e) => {
+  const newAmount = e.target.value;
+  setFromAmount(newAmount);
+
+  // Reset toAmount when fromAmount changes
+  if (!newAmount) {
+    setToAmount(0);
+  }
+};
+
+useEffect(() => {
+  const debounceTimer = setTimeout(() => {
+    setDebouncedAmount(fromAmount);
+  }, 100);
+
+  // Cleanup timeout if the component unmounts or fromAmount changes
+  return () => clearTimeout(debounceTimer);
+}, [fromAmount]);
+
+useEffect(() => {
+  const fetchSwapAmount = async () => {
+    if (debouncedAmount) {
+      const data = await getSwapAmount(debouncedAmount);
+      setToAmount(Number(data));
+    } else {
+      setToAmount(0);
+    }
   };
-
-  useEffect(() => {
-    const debounceTimer = setTimeout(() => {
-      setDebouncedAmount(fromAmount);
-    }, 100);
-
-    // Cleanup timeout if the component unmounts or fromAmount changes
-    return () => clearTimeout(debounceTimer);
-  }, [fromAmount]);
-
-
-  useEffect(() => {
-    const fetchSwapAmount = async () => {
-      if (debouncedAmount) {
-        const data = await getSwapAmount(debouncedAmount);
-        setToAmount(Number(data));
-      }
-    };
-    fetchSwapAmount();
-  }, [debouncedAmount]);
+  fetchSwapAmount();
+}, [debouncedAmount]);
 
   const handleSwap = () => {
     const isValidInput =
@@ -65,7 +74,13 @@ const SwapForm = () => {
       setBothTokenSelected(fromToken !== "Select a token" && toToken !== "Select a token");
     };
 
-    checkBothTokensSelected();
+    // if (fromToken === "Select a token" || toToken === "Select a token") {
+    //   alert("Please select both tokens before swapping.");
+    //   return;
+    // }else{
+      checkBothTokensSelected();
+    // }
+
   }, [fromToken, toToken]);
 
   const handleReverseToken = async () => {
@@ -151,7 +166,12 @@ const SwapForm = () => {
         setCustomSlippage={setCustomSlippage}
       />
 
-      <DeadLineDropDown />
+      <DeadLineDropDown
+      deadLine={deadLine} 
+      setDeadLine={setDeadLine}
+      customDeadLine = {customDeadLine}
+      setCustomDeadLine ={setCustomDeadLine}
+      />
 
       <div className="flex items-center justify-end mt-2 mb-6 w-full cursor-pointer">
         <button

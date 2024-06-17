@@ -1,20 +1,21 @@
 import { useState } from "react";
 
-const DeadLineDropDown = ({ slippage, setSlippage, customSlippage, setCustomSlippage }) => {
+// eslint-disable-next-line react/prop-types
+const DeadLineDropDown = ({ deadLine, setDeadLine, customDeadLine, setCustomDeadLine }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSelectChange = (value) => {
     if (value !== 'custom') {
-      setSlippage(value);
-      setCustomSlippage('');
+      setDeadLine(value);
+      setCustomDeadLine('');
     } else {
-      setSlippage(value);
+      setDeadLine(value);
     }
     setIsOpen(false);
   };
 
   const handleCustomChange = (event) => {
-    setCustomSlippage(event.target.value);
+    setCustomDeadLine(event.target.value);
   };
 
   const toggleDropdown = () => {
@@ -26,15 +27,15 @@ const DeadLineDropDown = ({ slippage, setSlippage, customSlippage, setCustomSlip
       <label htmlFor="slippage" className="text-white font-semibold">
         Deadline:
       </label>
-      <div className={`relative inline-block w-full ${slippage === "custom" ? "flex w-full" : ""}`}>
+      <div className={`relative inline-block w-full ${deadLine === "custom" ? "flex w-full" : ""}`}>
         <button
           onClick={toggleDropdown}
           className="bg-white text-black rounded-xl px-4 py-2 outline-none w-full text-left"
         >
-          {slippage ? slippage : 'Select Deadline'}
+          {deadLine ? deadLine : 'Select Deadline'}
         </button>
         {isOpen && (
-          <div className={`absolute z-10 ${slippage==="custom"?"mt-12":"mt-1"}
+          <div className={`absolute z-10 ${deadLine==="custom"?"mt-12":"mt-1"}
            w-full bg-white rounded-xl shadow-lg`}>
             <div
               onClick={() => handleSelectChange('5 sec')}
@@ -56,12 +57,12 @@ const DeadLineDropDown = ({ slippage, setSlippage, customSlippage, setCustomSlip
             </div>
           </div>
         )}
-        {slippage === 'custom' && (
+        {deadLine === 'custom' && (
         <div className='w-full'>
           <input
             type="number"
             placeholder="Enter Deadline"
-            value={customSlippage}
+            value={customDeadLine}
             onChange={handleCustomChange}
             className="bg-white text-black rounded-xl px-4 py-2 ml-2 outline-none w-full"
           />
