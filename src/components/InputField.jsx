@@ -1,17 +1,26 @@
-
-const InputField = ({ label, placeholder, value, onChange, children,type }) => {
+const InputField = ({
+  label,
+  placeholder,
+  value,
+  onChange,
+  children,
+  type,
+  disabled
+}) => {
   return (
     <div className="relative w-full">
-     <input
-  type={type}
-  className="text-white border-1 peer block w-full appearance-none 
+      <input
+        type={type}
+        value={value}
+        className="text-white border-1 peer block w-full appearance-none 
   rounded-lg border border-white bg-transparent px-2.5 pb-4 pt-4 
   text-sm focus:outline-none focus:ring-0"
-  placeholder={placeholder}
-  onChange={onChange}
-  style={{ '-moz-appearance': 'textfield' }} /* Firefox */
-  step="any" /* Chrome, Safari, Edge */
-/>
+        placeholder={placeholder}
+        onChange={onChange}
+        disabled={disabled}
+        style={{ "-moz-appearance": "textfield" }} /* Firefox */
+        step="any" /* Chrome, Safari, Edge */
+      />
 
       <label
         className="absolute top-2 left-1 z-10 origin-[0]

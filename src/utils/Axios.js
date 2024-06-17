@@ -20,11 +20,28 @@ export const getSwap = async (walletAddress,amountIn,fromToken,toToken) => {
 };
 
 export const getSwapAmount = async(amountIn)=>{
+    console.log(amountIn);
+    if(amountIn<=0)
+        return;
+
     try {
+        console.log("i am in")
         const response = await axios.post(BASE_URL+"/getAmountOut",{
             amountIn,
         })
+        console.log(response?.data?.data[0]?.hex)
         return response?.data?.data[0]?.hex;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getReverseTokenAPI = async(amountIn)=>{
+    try {
+        const response = await axios.post(BASE_URL+"/getAmountIn",{
+            amountIn,
+        })
+        console.log(response?.data);
     } catch (error) {
         console.log(error);
     }

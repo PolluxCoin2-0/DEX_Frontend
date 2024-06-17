@@ -22,7 +22,7 @@ const DeadLineDropDown = ({ slippage, setSlippage, customSlippage, setCustomSlip
   };
 
   return (
-    <div className="flex flex-col items-start px-2 py-6 rounded-lg space-y-4">
+    <div className="flex flex-col items-start px-2 pb-6 rounded-lg space-y-4">
       <label htmlFor="slippage" className="text-white font-semibold">
         Deadline:
       </label>
@@ -31,7 +31,7 @@ const DeadLineDropDown = ({ slippage, setSlippage, customSlippage, setCustomSlip
           onClick={toggleDropdown}
           className="bg-white text-black rounded-xl px-4 py-2 outline-none w-full text-left"
         >
-          {slippage ? slippage : 'Select slippage'}
+          {slippage ? slippage : 'Select Deadline'}
         </button>
         {isOpen && (
           <div className={`absolute z-10 ${slippage==="custom"?"mt-12":"mt-1"}
