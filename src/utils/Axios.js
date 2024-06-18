@@ -5,12 +5,30 @@ const POX_TOKEN_ADDRESS = import.meta.env.VITE_POX_TOKEN_ADDRESS;
 const USDX_TOKEN_ADDRESS = import.meta.env.VITE_USDX_TOKEN_ADDRESS;
 
 
-export const getSwap = async (walletAddress,amountIn,fromToken,toToken) => {
-    console.log(fromToken, toToken);
+export const getSwap = async (walletAddress, fromAmount, toAmount, fromToken, toToken, slippage, deadLine) => {
+    let from_Token;
+    let to_Token;
+
+    if (fromToken === "POX") {
+        from_Token = POX_TOKEN_ADDRESS;
+    } else if (fromToken === "USDX") {
+        from_Token = USDX_TOKEN_ADDRESS;
+    }
+
+    if (toToken === "POX") {
+        to_Token = POX_TOKEN_ADDRESS;
+    } else if (toToken === "USDX") {
+        to_Token = USDX_TOKEN_ADDRESS;
+    }
   try {
     const response = await axios.post(BASE_URL + "/swap", {
       walletAddress: walletAddress,
-      amountIn: "5000",
+      amountIn:fromAmount,
+      toAmount,
+      slippage,
+      deadLine,
+      from_Token,
+      to_Token,
     });
     console.log(response?.data);
     return response;
@@ -20,16 +38,13 @@ export const getSwap = async (walletAddress,amountIn,fromToken,toToken) => {
 };
 
 export const getSwapAmount = async(amountIn)=>{
-    console.log(amountIn);
     if(amountIn<=0)
         return;
 
     try {
-        console.log("i am in")
         const response = await axios.post(BASE_URL+"/getAmountOut",{
             amountIn,
         })
-        console.log(response?.data?.data[0]?.hex)
         return response?.data?.data[0]?.hex;
     } catch (error) {
         console.log(error);
@@ -47,7 +62,7 @@ export const getReverseTokenAPI = async(amountIn)=>{
     }
 }
 
-export const getAddLiquidity = async (walletAddress,fromAmount, toAmount, fromToken, toToken) => {
+export const getAddLiquidity = async (walletAddress, fromAmount, toAmount, fromToken, toToken, deadLine) => {
     let from_Token;
     let to_Token;
 
@@ -76,6 +91,7 @@ export const getAddLiquidity = async (walletAddress,fromAmount, toAmount, fromTo
             walletAddress: walletAddress,
             fromToken: from_Token,
             toToken: to_Token,
+            deadLine
         });
             return response.data;
     } catch (error) {

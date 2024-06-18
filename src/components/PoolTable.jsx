@@ -1,4 +1,5 @@
 import Logo from "../assets/Logo.png";
+import USDX from "../assets/UXDX.png";
 
 const PoolTable = () => {
   return (
@@ -10,8 +11,8 @@ const PoolTable = () => {
             <p>POX</p>
             </div>
             <div className="flex items-center space-x-2 py-2 md:py-4 font-semibold">
-            <img src={Logo} alt="pox-logo" className="w-8 h-8 md:h-auto" />
-            <p>UXDX</p>
+            <img src={USDX} alt="pox-logo" className="w-8 h-8 md:h-auto" />
+            <p>USDX</p>
             </div>
         </div>
 
@@ -22,21 +23,21 @@ const PoolTable = () => {
             <div className="flex space-x-2">
         <div className="flex items-center -space-x-3 py-2 md:py-4 font-semibold">
             <img src={Logo} alt="pox-logo" className="w-8 h-8 md:h-auto" />
-            <img src={Logo} alt="pox-logo" className="w-8 h-8 md:h-auto" />
+            <img src={USDX} alt="pox-logo" className="w-8 h-8 md:h-auto" />
             </div>
             <div className="flex items-center  py-2 md:py-4 font-semibold">
             <p className="font-bold">POX<span className="text-[#BA843D] font-bold">/</span></p>
-            <p className="font-bold">UXDX</p>
+            <p className="font-bold">USDX</p>
             </div>
             </div>
         </div>
 
         <div className="flex flex-row items-center justify-between text-white">
         <div>
-            <p className="font-bold">POX per UXDX</p>
+            <p className="font-bold">POX per USDX</p>
         </div>
         <div>
-            <p className="font-bold">UXDX per POX</p>
+            <p className="font-bold">USDX per POX</p>
         </div>
         <div>
             <p className="font-bold">Share of Pool</p>
@@ -48,7 +49,7 @@ const PoolTable = () => {
             <p className="font-bold">POX</p>
         </div>
         <div>
-            <p className="font-bold">UXDX</p>
+            <p className="font-bold">USDX</p>
         </div>
         <div>
             <p className="font-bold">Pool Tokens</p>

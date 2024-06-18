@@ -25,7 +25,7 @@ const DeadLineDropDown = ({ deadLine, setDeadLine, customDeadLine, setCustomDead
   return (
     <div className="flex flex-col items-start px-2 pb-6 rounded-lg space-y-4">
       <label htmlFor="slippage" className="text-white font-semibold">
-        Deadline:
+        Deadline (min):
       </label>
       <div className={`relative inline-block w-full ${deadLine === "custom" ? "flex w-full" : ""}`}>
         <button
@@ -38,16 +38,16 @@ const DeadLineDropDown = ({ deadLine, setDeadLine, customDeadLine, setCustomDead
           <div className={`absolute z-10 ${deadLine==="custom"?"mt-12":"mt-1"}
            w-full bg-white rounded-xl shadow-lg`}>
             <div
-              onClick={() => handleSelectChange('5 sec')}
+              onClick={() => handleSelectChange('5')}
               className="px-4 py-2 cursor-pointer hover:bg-gray-600 hover:text-white hover:rounded-t-xl"
             >
-              5 sec
+              5
             </div>
             <div
-              onClick={() => handleSelectChange('10 sec')}
+              onClick={() => handleSelectChange('10')}
               className="px-4 py-2 cursor-pointer hover:bg-gray-600 hover:text-white"
             >
-              10 sec
+              10
             </div>
             <div
               onClick={() => handleSelectChange('custom')}
@@ -61,7 +61,7 @@ const DeadLineDropDown = ({ deadLine, setDeadLine, customDeadLine, setCustomDead
         <div className='w-full'>
           <input
             type="number"
-            placeholder="Enter Deadline"
+            placeholder="Enter Deadline (00)"
             value={customDeadLine}
             onChange={handleCustomChange}
             className="bg-white text-black rounded-xl px-4 py-2 ml-2 outline-none w-full"

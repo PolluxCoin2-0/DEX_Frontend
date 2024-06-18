@@ -66,7 +66,11 @@ useEffect(() => {
       alert("Enter both input value and select both tokens.");
       return;
     }
-    getSwap(walletAddress?.address, fromAmount, fromToken, toToken);
+
+    const send_to_api_deadline = customDeadLine?customDeadLine:deadLine
+    const send_to_api_slippage = customSlippage?customSlippage:slippage
+
+    getSwap(walletAddress?.address, fromAmount, toAmount, fromToken, toToken,send_to_api_slippage,send_to_api_deadline);
   };
 
   useEffect(() => {
