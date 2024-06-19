@@ -5,7 +5,7 @@ const POX_TOKEN_ADDRESS = import.meta.env.VITE_POX_TOKEN_ADDRESS;
 const USDX_TOKEN_ADDRESS = import.meta.env.VITE_USDX_TOKEN_ADDRESS;
 
 
-export const getSwap = async (walletAddress, fromAmount, toAmount, fromToken, toToken, slippage, deadLine) => {
+export const getSwap = async (walletAddress, fromAmount, fromToken, toToken, slippage, deadLine) => {
     let from_Token;
     let to_Token;
 
@@ -24,7 +24,6 @@ export const getSwap = async (walletAddress, fromAmount, toAmount, fromToken, to
     const response = await axios.post(BASE_URL + "/swap", {
       walletAddress: walletAddress,
       amountIn:fromAmount,
-      toAmount,
       slippage,
       deadLine,
       from_Token,
