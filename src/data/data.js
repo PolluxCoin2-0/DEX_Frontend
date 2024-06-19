@@ -68,54 +68,6 @@ const data = [
         inventoryStatus: 'INSTOCK',
         pricechange: 25
     },
-    {
-        id: '1002',
-        code: 'f230fh0g3',
-        name: 'Bamboo Watch',
-        description: 'Product Description',
-        image: 'bamboo-watch.jpg',
-        price: 85,
-        category: 'Accessories',
-        liquidity: 25,
-        inventoryStatus: 'INSTOCK',
-        pricechange: 35
-    },
-    {
-        id: '1003',
-        code: 'f230fh0g3',
-        name: 'Bamboo Watch',
-        description: 'Product Description',
-        image: 'bamboo-watch.jpg',
-        price: 55,
-        category: 'Accessories',
-        liquidity: 26,
-        inventoryStatus: 'INSTOCK',
-        pricechange: 45
-    },
-    {
-        id: '1004',
-        code: 'f230fh0g3',
-        name: 'Bamboo Watch',
-        description: 'Product Description',
-        image: 'bamboo-watch.jpg',
-        price: 95,
-        category: 'Accessories',
-        liquidity: 28,
-        inventoryStatus: 'INSTOCK',
-        pricechange: 55
-    },
-    {
-        id: '1005',
-        code: 'f230fh0g3',
-        name: 'Bamboo Watch',
-        description: 'Product Description',
-        image: 'bamboo-watch.jpg',
-        price: 25,
-        category: 'Accessories',
-        liquidity: 27,
-        inventoryStatus: 'INSTOCK',
-        pricechange: 65
-    },
 ]
 
   export {data, tableData};

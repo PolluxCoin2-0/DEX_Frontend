@@ -5,9 +5,10 @@ import InputField from "../components/InputField";
 import Logo from "../assets/Logo.png";
 import { IoAddOutline } from "react-icons/io5";
 import { GrSubtract } from "react-icons/gr";
-import { getSwap, getSwapAmount } from "../utils/Axios";
+import { getReverseTokenAPI, getSwap, getSwapAmount } from "../utils/Axios";
 import { useSelector } from "react-redux";
 import SlippageDropDown from "./SlippageDropDown";
+import DeadLineDropDown from "./DeadLineDropDown";
 
 const SwapForm = () => {
   const walletAddress = useSelector((state) => state?.wallet);
@@ -18,34 +19,43 @@ const SwapForm = () => {
   const [showRecipient, setShowRecipient] = useState(false);
   const [slippage, setSlippage] = useState("");
   const [customSlippage, setCustomSlippage] = useState("");
+  const [deadLine, setDeadLine] = useState("");
+  const [customDeadLine, setCustomDeadLine] = useState("");
   const [swapArrowState, setSwapArrowState] = useState(true);
   const [debouncedAmount, setDebouncedAmount] = useState(fromAmount);
+  const [bothTokenSelected, setBothTokenSelected] = useState(false);
 
-  // Handle input change with debounce
-  const handleFromAmountChange = (e) => {
-    setFromAmount(e.target.value);
+ // Handle input change with debounce
+ const handleFromAmountChange = (e) => {
+  const newAmount = e.target.value;
+  setFromAmount(newAmount);
+
+  // Reset toAmount when fromAmount changes
+  if (!newAmount) {
+    setToAmount(0);
+  }
+};
+
+useEffect(() => {
+  const debounceTimer = setTimeout(() => {
+    setDebouncedAmount(fromAmount);
+  }, 100);
+
+  // Cleanup timeout if the component unmounts or fromAmount changes
+  return () => clearTimeout(debounceTimer);
+}, [fromAmount]);
+
+useEffect(() => {
+  const fetchSwapAmount = async () => {
+    if (debouncedAmount) {
+      const data = await getSwapAmount(debouncedAmount);
+      setToAmount(Number(data));
+    } else {
+      setToAmount(0);
+    }
   };
-
-  useEffect(() => {
-    const debounceTimer = setTimeout(() => {
-      setDebouncedAmount(fromAmount);
-    }, 50);
-
-    // Cleanup timeout if the component unmounts or fromAmount changes
-    return () => clearTimeout(debounceTimer);
-  }, [fromAmount]);
-
-  useEffect(() => {
-    const fetchSwapAmount = async () => {
-      if (debouncedAmount) {
-        const data = await getSwapAmount(debouncedAmount);
-
-        setToAmount(Number(data));
-      }
-    };
-    fetchSwapAmount();
-  }, [debouncedAmount]);
-
+  fetchSwapAmount();
+}, [debouncedAmount]);
 
   const handleSwap = () => {
     const isValidInput =
@@ -56,20 +66,41 @@ const SwapForm = () => {
       alert("Enter both input value and select both tokens.");
       return;
     }
-    getSwap(walletAddress?.address, fromAmount, fromToken, toToken);
+
+    const send_to_api_deadline = customDeadLine?customDeadLine:deadLine
+    const send_to_api_slippage = customSlippage?customSlippage:slippage
+
+    getSwap(walletAddress?.address, fromAmount, toAmount, fromToken, toToken,send_to_api_slippage,send_to_api_deadline);
   };
 
-  const handleReverseToken = () => {
+  useEffect(() => {
+    const checkBothTokensSelected = () => {
+      setBothTokenSelected(fromToken !== "Select a token" && toToken !== "Select a token");
+    };
+
+    // if (fromToken === "Select a token" || toToken === "Select a token") {
+    //   alert("Please select both tokens before swapping.");
+    //   return;
+    // }else{
+      checkBothTokensSelected();
+    // }
+
+  }, [fromToken, toToken]);
+
+  const handleReverseToken = async () => {
     if (fromToken === "Select a token" || toToken === "Select a token") {
       alert("Please select both tokens before swapping.");
       return;
     }
 
+    // Perform the swap
     setSwapArrowState(!swapArrowState);
     setFromAmount(toAmount);
-    setToAmount(fromAmount);
+    setToAmount(0);
     setFromToken(toToken);
     setToToken(fromToken);
+
+    // await getReverseTokenAPI(fromAmount);
   };
 
   const handleFromTokenSelect = (token) => {
@@ -96,6 +127,7 @@ const SwapForm = () => {
         placeholder="Enter an amount"
         value={fromAmount}
         onChange={handleFromAmountChange}
+        disabled={!bothTokenSelected} 
       >
         <DropdownButton
           selectedOption={fromToken}
@@ -123,9 +155,8 @@ const SwapForm = () => {
       )}
 
       <div className="flex justify-between border-[1px] rounded-lg px-4 py-3">
-
-      <p className="text-white font-semibold "> {toAmount}</p>
-      <DropdownButton
+        <p className="text-white font-semibold ">{toAmount}</p>
+        <DropdownButton
           selectedOption={toToken}
           onOptionSelect={handleToTokenSelect}
           otherSelectedOption={fromToken}
@@ -137,6 +168,13 @@ const SwapForm = () => {
         setSlippage={setSlippage}
         customSlippage={customSlippage}
         setCustomSlippage={setCustomSlippage}
+      />
+
+      <DeadLineDropDown
+      deadLine={deadLine} 
+      setDeadLine={setDeadLine}
+      customDeadLine = {customDeadLine}
+      setCustomDeadLine ={setCustomDeadLine}
       />
 
       <div className="flex items-center justify-end mt-2 mb-6 w-full cursor-pointer">
@@ -164,9 +202,7 @@ const SwapForm = () => {
         />
       )}
       <div className="text-center">
-        <p className="text-[#F3BB1B] cursor-pointer mt-2 font-bold">
-          View Token
-        </p>
+        <p className="text-[#F3BB1B] cursor-pointer mt-2 font-bold">View Token</p>
 
         <div className="flex items-center justify-center space-x-2 py-2 md:py-4 font-semibold">
           <img src={Logo} alt="pox-logo" className="w-8 h-8 md:h-auto" />

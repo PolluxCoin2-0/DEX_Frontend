@@ -1,20 +1,21 @@
 import { useState } from "react";
 
-const DeadLineDropDown = ({ slippage, setSlippage, customSlippage, setCustomSlippage }) => {
+// eslint-disable-next-line react/prop-types
+const DeadLineDropDown = ({ deadLine, setDeadLine, customDeadLine, setCustomDeadLine }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSelectChange = (value) => {
     if (value !== 'custom') {
-      setSlippage(value);
-      setCustomSlippage('');
+      setDeadLine(value);
+      setCustomDeadLine('');
     } else {
-      setSlippage(value);
+      setDeadLine(value);
     }
     setIsOpen(false);
   };
 
   const handleCustomChange = (event) => {
-    setCustomSlippage(event.target.value);
+    setCustomDeadLine(event.target.value);
   };
 
   const toggleDropdown = () => {
@@ -22,31 +23,31 @@ const DeadLineDropDown = ({ slippage, setSlippage, customSlippage, setCustomSlip
   };
 
   return (
-    <div className="flex flex-col items-start px-2 py-6 rounded-lg space-y-4">
+    <div className="flex flex-col items-start px-2 pb-6 rounded-lg space-y-4">
       <label htmlFor="slippage" className="text-white font-semibold">
-        Deadline:
+        Deadline (min):
       </label>
-      <div className={`relative inline-block w-full ${slippage === "custom" ? "flex w-full" : ""}`}>
+      <div className={`relative inline-block w-full ${deadLine === "custom" ? "flex w-full" : ""}`}>
         <button
           onClick={toggleDropdown}
           className="bg-white text-black rounded-xl px-4 py-2 outline-none w-full text-left"
         >
-          {slippage ? slippage : 'Select slippage'}
+          {deadLine ? deadLine : 'Select Deadline'}
         </button>
         {isOpen && (
-          <div className={`absolute z-10 ${slippage==="custom"?"mt-12":"mt-1"}
+          <div className={`absolute z-10 ${deadLine==="custom"?"mt-12":"mt-1"}
            w-full bg-white rounded-xl shadow-lg`}>
             <div
-              onClick={() => handleSelectChange('5 sec')}
+              onClick={() => handleSelectChange('5')}
               className="px-4 py-2 cursor-pointer hover:bg-gray-600 hover:text-white hover:rounded-t-xl"
             >
-              5 sec
+              5
             </div>
             <div
-              onClick={() => handleSelectChange('10 sec')}
+              onClick={() => handleSelectChange('10')}
               className="px-4 py-2 cursor-pointer hover:bg-gray-600 hover:text-white"
             >
-              10 sec
+              10
             </div>
             <div
               onClick={() => handleSelectChange('custom')}
@@ -56,12 +57,12 @@ const DeadLineDropDown = ({ slippage, setSlippage, customSlippage, setCustomSlip
             </div>
           </div>
         )}
-        {slippage === 'custom' && (
+        {deadLine === 'custom' && (
         <div className='w-full'>
           <input
             type="number"
-            placeholder="Enter Deadline"
-            value={customSlippage}
+            placeholder="Enter Deadline (00)"
+            value={customDeadLine}
             onChange={handleCustomChange}
             className="bg-white text-black rounded-xl px-4 py-2 ml-2 outline-none w-full"
           />

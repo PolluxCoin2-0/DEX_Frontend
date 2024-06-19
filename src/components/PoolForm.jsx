@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DropdownButton from "../components/DropDownButton";
 import InputField from "../components/InputField";
 import { IoAddOutline, IoArrowBackOutline } from "react-icons/io5";
@@ -6,6 +6,7 @@ import PoolTable from "./PoolTable";
 import { getAddLiquidity } from "../utils/Axios";
 import SuccessModal from "./SuccessModal";
 import { useSelector } from "react-redux";
+import DeadLineDropDown from "./DeadLineDropDown";
 
 const PoolForm = () => {
   const [fromAmount, setFromAmount] = useState(0);
@@ -13,30 +14,41 @@ const PoolForm = () => {
   const [fromToken, setFromToken] = useState("Select a token");
   const [toToken, setToToken] = useState("Select a token");
   const [error, setError] = useState("");
-  const [showPoolTable, setShowPoolTable] = useState(false);
+  const [showPoolTable, setShowPoolTable] = useState(true);
   const [isShowModal, setIsShowModal] = useState(false);
   const walletAddress = useSelector((state) => state?.wallet);
-
+  const [deadLine, setDeadLine] = useState("");
+  const [customDeadLine, setCustomDeadLine] = useState("");
+  const [bothTokenSelected, setBothTokenSelected] = useState(false);
+  
   const handleGetAddLiquidity = async () => {
     const isValidInput =
-    fromAmount &&
-    toAmount &&
-    fromToken !== "Select a token" &&
-    toToken !== "Select a token";
-  if (!isValidInput) {
-    return;
-  }
-
-    const data = await getAddLiquidity(
-      walletAddress?.address,
-      fromAmount,
-      toAmount,
-      fromToken,
-      toToken
-    );
-    if (data?.statusCode === 200) {
-      setIsShowModal(true);
+      fromAmount &&
+      toAmount &&
+      fromToken !== "Select a token" &&
+      toToken !== "Select a token";
+    if (!isValidInput) {
       return;
+    }
+
+    const send_to_api_deadline = customDeadLine?customDeadLine:deadLine
+    
+    try {
+      const data = await getAddLiquidity(
+        walletAddress?.address,
+        fromAmount,
+        toAmount,
+        fromToken,
+        toToken,
+        send_to_api_deadline
+      );
+
+      if (data?.statusCode === 200) {
+        setIsShowModal(true);
+        return;
+      }
+    } catch (error) {
+      console.error("Error adding liquidity:", error);
     }
   };
 
@@ -58,6 +70,20 @@ const PoolForm = () => {
     }
   };
 
+  useEffect(() => {
+    const checkBothTokensSelected = () => {
+      setBothTokenSelected(fromToken !== "Select a token" && toToken !== "Select a token");
+    };
+
+    // if (fromToken === "Select a token" || toToken === "Select a token") {
+    //   alert("Please select both tokens before swapping.");
+    //   return;
+    // }else{
+      checkBothTokensSelected();
+    // }
+
+  }, [fromToken, toToken]);
+
   return (
     <div className="w-full text-center pt-5 pb-10">
       <div className=" text-white flex items-center justify-center space-x-6 pb-10">
@@ -70,6 +96,7 @@ const PoolForm = () => {
         placeholder="Enter an amount"
         value={fromAmount}
         onChange={(e) => setFromAmount(e.target.value)}
+        disabled={!bothTokenSelected} 
       >
         <DropdownButton
           selectedOption={fromToken}
@@ -89,6 +116,7 @@ const PoolForm = () => {
         placeholder="Enter an amount"
         value={toAmount}
         onChange={(e) => setToAmount(e.target.value)}
+        disabled={!bothTokenSelected} 
       >
         <DropdownButton
           selectedOption={toToken}
@@ -96,6 +124,16 @@ const PoolForm = () => {
           otherSelectedOption={fromToken}
         />
       </InputField>
+
+      <div className="pt-6 text-left">
+        <DeadLineDropDown
+          deadLine={deadLine}
+          setDeadLine={setDeadLine}
+          customDeadLine={customDeadLine}
+          setCustomDeadLine={setCustomDeadLine}
+        />
+      </div>
+
       {showPoolTable && <PoolTable />}
       <button
         // onClick={() => setShowPoolTable(!showPoolTable)}
