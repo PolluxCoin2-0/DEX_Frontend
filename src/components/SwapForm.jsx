@@ -48,7 +48,7 @@ useEffect(() => {
 useEffect(() => {
   const fetchSwapAmount = async () => {
     if (debouncedAmount) {
-      const data = await getSwapAmount(debouncedAmount);
+      const data = await getSwapAmount(debouncedAmount,fromToken,toToken);
       setToAmount(Number(data));
     } else {
       setToAmount(0);

@@ -25,9 +25,9 @@ export const getSwap = async (walletAddress, fromAmount, fromToken, toToken, sli
       walletAddress: walletAddress,
       amountIn:fromAmount,
       slippage,
-      deadLine,
-      from_Token,
-      to_Token,
+      deadline:deadLine,
+      token0:from_Token,
+      token1:to_Token,
     });
     console.log(response?.data);
     return response;
@@ -36,15 +36,31 @@ export const getSwap = async (walletAddress, fromAmount, fromToken, toToken, sli
   }
 };
 
-export const getSwapAmount = async(amountIn)=>{
-    if(amountIn<=0)
-        return;
+export const getSwapAmount = async(amountIn,fromToken, toToken)=>{
+    let from_Token;
+    let to_Token;
+
+    if (fromToken === "POX") {
+        from_Token = POX_TOKEN_ADDRESS;
+    } else if (fromToken === "USDX") {
+        from_Token = USDX_TOKEN_ADDRESS;
+    }
+
+    if (toToken === "POX") {
+        to_Token = POX_TOKEN_ADDRESS;
+    } else if (toToken === "USDX") {
+        to_Token = USDX_TOKEN_ADDRESS;
+    }
 
     try {
-        const response = await axios.post(BASE_URL+"/getAmountOut",{
-            amountIn,
+        console.log(amountIn, from_Token,to_Token)
+        const response = await axios.post(BASE_URL+"/getAmountsOut2",{
+            amount:amountIn,
+            token0:from_Token,
+            token1:to_Token
         })
-        return response?.data?.data[0]?.hex;
+        console.log(response?.data)
+        return response?.data?.data;
     } catch (error) {
         console.log(error);
     }
