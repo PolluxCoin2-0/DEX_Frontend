@@ -4,6 +4,9 @@ import Logo from "../assets/Logo.png";
 import { TbCopyCheck, TbCopyCheckFilled } from "react-icons/tb";
 import { useDispatch } from "react-redux";
 import { setWalletAddress } from "../redux/walletSlice";
+// const TronWeb = require('tronweb')
+import poxweb from "polluxweb";
+import {getwalletadress} from "../CallingFunction";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -58,6 +61,59 @@ const Navbar = () => {
     navigator.clipboard.writeText(address);
     setIsCopy(!isCopy);
   };
+
+  // var obj = setInterval(async ()=>{
+  //   //if (window.tronLink.tronWeb) 
+  //     if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+  //         clearInterval(obj)
+  //       //var tronweb = window.tronLink.tronWeb
+  //         var tronweb = window.tronWeb
+  //         var tx = await tronweb.request({method: 'Address',
+  //                                         params:{type: 'trc10',
+  //                                                 options: {address: '1002000'},
+  //                                                 },
+  //                                         }
+  //                                        )
+
+  //     }
+  // }, 10)
+
+  // obj;
+
+  // async function checkTronWeb() {
+  //   console.log("check tron")
+  //   const intervalId = setInterval(async () => {
+  //     if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+  //   console.log("check tron inside if")
+  //       clearInterval(intervalId);
+  //       const tronweb = window.tronWeb;
+
+  //       try {
+  //         const tx = await tronweb.request({
+  //           method: 'wallet/getaccount',
+  //           params: {
+  //             address: '1002000',
+  //             visible: true
+  //           }
+  //         });
+
+  //         console.log(tx); // Handle the response as needed
+  //       } catch (error) {
+  //         console.error("Error making request:", error);
+  //       }
+  //     }
+  //   }
+  //   , 10);
+  // }
+
+  function getTronweb(){
+    var obj = setInterval(async ()=>{
+        if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+            clearInterval(obj)
+            document.write("Yes, catch it:",window.tronWeb.defaultAddress.base58)
+        }
+    }, 10)
+}
 
   return (
     <nav className="bg-gray-600 text-white relative z-10">
@@ -129,7 +185,7 @@ const Navbar = () => {
             <li className="pl-4 cursor-pointer">V1</li>
           </ul>
           <button
-            onClick={connectMetaMask}
+            onClick={getwalletadress}
             className="font-bold text-black rounded-md bg-[#F3BB1B] px-4 py-[7px] cursor-pointer"
           >
             {data && data.address && data.address.length > 0 ? (

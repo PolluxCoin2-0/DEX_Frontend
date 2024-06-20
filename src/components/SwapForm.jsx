@@ -48,7 +48,7 @@ useEffect(() => {
 useEffect(() => {
   const fetchSwapAmount = async () => {
     if (debouncedAmount) {
-      const data = await getSwapAmount(debouncedAmount);
+      const data = await getSwapAmount(debouncedAmount,fromToken,toToken);
       setToAmount(Number(data));
     } else {
       setToAmount(0);
@@ -57,7 +57,7 @@ useEffect(() => {
   fetchSwapAmount();
 }, [debouncedAmount]);
 
-  const handleSwap = () => {
+  const handleSwap =async () => {
     const isValidInput =
       fromAmount &&
       fromToken !== "Select a token" &&
@@ -70,7 +70,14 @@ useEffect(() => {
     const send_to_api_deadline = customDeadLine?customDeadLine:deadLine
     const send_to_api_slippage = customSlippage?customSlippage:slippage
 
-    getSwap(walletAddress?.address, fromAmount, toAmount, fromToken, toToken,send_to_api_slippage,send_to_api_deadline);
+    const data = await getSwap(walletAddress?.address, fromAmount, fromToken, toToken,send_to_api_slippage,send_to_api_deadline);
+    if(data?.data)
+      {
+        alert("Swap successfully!")
+      }
+      else{
+        alert("Something went wrong!")
+      }
   };
 
   useEffect(() => {

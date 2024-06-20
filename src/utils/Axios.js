@@ -5,7 +5,7 @@ const POX_TOKEN_ADDRESS = import.meta.env.VITE_POX_TOKEN_ADDRESS;
 const USDX_TOKEN_ADDRESS = import.meta.env.VITE_USDX_TOKEN_ADDRESS;
 
 
-export const getSwap = async (walletAddress, fromAmount, toAmount, fromToken, toToken, slippage, deadLine) => {
+export const getSwap = async (walletAddress, fromAmount, fromToken, toToken, slippage, deadLine) => {
     let from_Token;
     let to_Token;
 
@@ -24,28 +24,42 @@ export const getSwap = async (walletAddress, fromAmount, toAmount, fromToken, to
     const response = await axios.post(BASE_URL + "/swap", {
       walletAddress: walletAddress,
       amountIn:fromAmount,
-      toAmount,
-      slippage,
-      deadLine,
-      from_Token,
-      to_Token,
+      slippage:parseInt(slippage),
+      deadline:parseInt(deadLine),
+      token0:from_Token,
+      token1:to_Token,
     });
-    console.log(response?.data);
-    return response;
+    return response?.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const getSwapAmount = async(amountIn)=>{
-    if(amountIn<=0)
-        return;
+export const getSwapAmount = async(amountIn,fromToken, toToken)=>{
+    let from_Token;
+    let to_Token;
+
+    if (fromToken === "POX") {
+        from_Token = POX_TOKEN_ADDRESS;
+    } else if (fromToken === "USDX") {
+        from_Token = USDX_TOKEN_ADDRESS;
+    }
+
+    if (toToken === "POX") {
+        to_Token = POX_TOKEN_ADDRESS;
+    } else if (toToken === "USDX") {
+        to_Token = USDX_TOKEN_ADDRESS;
+    }
 
     try {
-        const response = await axios.post(BASE_URL+"/getAmountOut",{
-            amountIn,
+        console.log(amountIn, from_Token,to_Token)
+        const response = await axios.post(BASE_URL+"/getAmountsOut2",{
+            amount:amountIn,
+            token0:from_Token,
+            token1:to_Token
         })
-        return response?.data?.data[0]?.hex;
+        console.log(response?.data)
+        return response?.data?.data;
     } catch (error) {
         console.log(error);
     }
