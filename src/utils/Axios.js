@@ -24,13 +24,12 @@ export const getSwap = async (walletAddress, fromAmount, fromToken, toToken, sli
     const response = await axios.post(BASE_URL + "/swap", {
       walletAddress: walletAddress,
       amountIn:fromAmount,
-      slippage,
-      deadline:deadLine,
+      slippage:parseInt(slippage),
+      deadline:parseInt(deadLine),
       token0:from_Token,
       token1:to_Token,
     });
-    console.log(response?.data);
-    return response;
+    return response?.data;
   } catch (error) {
     console.log(error);
   }
