@@ -79,15 +79,10 @@ useEffect(() => {
     const data = await getSwap(walletAddress, fromAmount, fromToken, toToken,send_to_api_slippage,send_to_api_deadline);
     console.log(data?.data?.transaction);
 
-    console.log()
-
-    const signedTransaction = await window.pox.signdata(
-      data?.data?.transaction,
-            // walletAddress
-          );
-          console.log('Signed Transaction:', signedTransaction);
-          const result = await polluxweb.trx.sendRawTransaction(signedTransaction);
-          console.log(result);
+    const signedTransaction = await window.pox.signdata(data?.data?.transaction,);
+    console.log('Signed Transaction:', signedTransaction);
+    const result = await window.pox.broadcast(signedTransaction);
+    console.log(result);
 
     if(data?.data)
       {
