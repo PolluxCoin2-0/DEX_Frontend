@@ -3,23 +3,19 @@ import { useState } from "react";
 import Logo from "../assets/Logo.png";
 import { TbCopyCheck, TbCopyCheckFilled } from "react-icons/tb";
 import { useDispatch } from "react-redux";
-import { setWalletAddress } from "../redux/walletSlice";
-// const TronWeb = require('tronweb')
-import poxweb from "polluxweb";
-import {getwalletadress} from "../CallingFunction";
+import { setWalletAddress,setPoxBalance,setUsdxBalance } from "../redux/walletSlice";
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const currentPath = location.pathname;
   const [isOpen, setIsOpen] = useState(false);
-  const [data, setData] = useState({
-    address: null,
-  });
+  const [address, setAddress] = useState();
   const [isCopy, setIsCopy] = useState(false);
+
   function truncateString(str, maxLength) {
     if (str?.length > 0 && str?.length <= maxLength) {
-      return str; // If string length is within or equal to maxLength, return the original string
+      return str; 
     } else {
       const truncatedString =
         str?.substring(0, Math.floor(maxLength / 2)) +
@@ -29,29 +25,7 @@ const Navbar = () => {
     }
   }
 
-  const truncatedAddress = truncateString(data?.address, 10);
-
-  // Button handler button for handling a
-  // request event for metamask
-  const connectMetaMask = () => {
-    if (window.ethereum) {
-      window.ethereum
-        .request({ method: "eth_requestAccounts" })
-        .then((res) => accountChangeHandler(res[0]))
-        .catch((error) => console.error("Error connecting MetaMask:", error));
-    } else {
-      alert("Install MetaMask extension!!");
-    }
-  };
-
-  const accountChangeHandler = (account) => {
-    setData({
-      ...data,
-      address: account,
-    });
-    dispatch(setWalletAddress(account));
-  };
-  console.log(data);
+  const truncatedAddress = truncateString(address, 10);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -62,58 +36,26 @@ const Navbar = () => {
     setIsCopy(!isCopy);
   };
 
-  // var obj = setInterval(async ()=>{
-  //   //if (window.tronLink.tronWeb) 
-  //     if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-  //         clearInterval(obj)
-  //       //var tronweb = window.tronLink.tronWeb
-  //         var tronweb = window.tronWeb
-  //         var tx = await tronweb.request({method: 'Address',
-  //                                         params:{type: 'trc10',
-  //                                                 options: {address: '1002000'},
-  //                                                 },
-  //                                         }
-  //                                        )
+  async function getTronweb() {
+    var obj = setInterval(async () => {
+      // console.log("window.pox.address", window.pox, window.pox.getwalletadress());
+      if (window.pox ) {
+        clearInterval(obj);
+        const data =JSON.stringify(await window.pox.getwalletadress());
+        const parsedObject = JSON.parse(data);
+        dispatch(setWalletAddress(parsedObject[1].data))
+        setAddress(parsedObject[1]?.data)
 
-  //     }
-  // }, 10)
+        const detailsData = JSON.stringify(await window.pox.getDetails())
+        const parsedDetailsObject = JSON.parse(detailsData);
+        
+        dispatch(setPoxBalance(parsedDetailsObject[1]?.data?.Balance/Math.pow(10,6)))
+        dispatch(setUsdxBalance(parsedDetailsObject[1]?.data?.USDX))
+      }
+    }, 1000);
+  }
 
-  // obj;
 
-  // async function checkTronWeb() {
-  //   console.log("check tron")
-  //   const intervalId = setInterval(async () => {
-  //     if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-  //   console.log("check tron inside if")
-  //       clearInterval(intervalId);
-  //       const tronweb = window.tronWeb;
-
-  //       try {
-  //         const tx = await tronweb.request({
-  //           method: 'wallet/getaccount',
-  //           params: {
-  //             address: '1002000',
-  //             visible: true
-  //           }
-  //         });
-
-  //         console.log(tx); // Handle the response as needed
-  //       } catch (error) {
-  //         console.error("Error making request:", error);
-  //       }
-  //     }
-  //   }
-  //   , 10);
-  // }
-
-  function getTronweb(){
-    var obj = setInterval(async ()=>{
-        if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-            clearInterval(obj)
-            document.write("Yes, catch it:",window.tronWeb.defaultAddress.base58)
-        }
-    }, 10)
-}
 
   return (
     <nav className="bg-gray-600 text-white relative z-10">
@@ -185,10 +127,10 @@ const Navbar = () => {
             <li className="pl-4 cursor-pointer">V1</li>
           </ul>
           <button
-            onClick={getwalletadress}
+            onClick={getTronweb}
             className="font-bold text-black rounded-md bg-[#F3BB1B] px-4 py-[7px] cursor-pointer"
           >
-            {data && data.address && data.address.length > 0 ? (
+            {address && address && address.length > 0 ? (
               <div className="flex flex-row items-center space-x-4">
                 <p>{truncatedAddress}</p>
                 {isCopy ? (
@@ -196,7 +138,7 @@ const Navbar = () => {
                 ) : (
                   <TbCopyCheck
                     size={22}
-                    onClick={() => handleCopy(data?.address)}
+                    onClick={() => handleCopy(address)}
                   />
                 )}
               </div>
@@ -314,10 +256,10 @@ const Navbar = () => {
           </div>
         </ul>
         <button
-          onClick={connectMetaMask}
+          onClick={getTronweb}
           className="font-bold mt-4 w-full rounded-md text-black bg-[#F3BB1B] px-4 py-2 cursor-pointer hover:bg-[#f2a80c] transition-colors duration-300"
         >
-          {data && data.address && data.address.length > 0 ? (
+          {address && address && address.length > 0 ? (
             <div className="flex flex-row items-center space-x-4">
               <p>{truncatedAddress}</p>
               {isCopy ? (
@@ -325,7 +267,7 @@ const Navbar = () => {
               ) : (
                 <TbCopyCheck
                   size={22}
-                  onClick={() => handleCopy(data?.address)}
+                  onClick={() => handleCopy(address)}
                 />
               )}
             </div>

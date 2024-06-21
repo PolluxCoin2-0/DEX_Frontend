@@ -5,7 +5,7 @@ import InputField from "../components/InputField";
 import Logo from "../assets/Logo.png";
 import { IoAddOutline } from "react-icons/io5";
 import { GrSubtract } from "react-icons/gr";
-import { getReverseTokenAPI, getSwap, getSwapAmount } from "../utils/Axios";
+import { getSwap, getSwapAmount } from "../utils/Axios";
 import { useSelector } from "react-redux";
 import SlippageDropDown from "./SlippageDropDown";
 import DeadLineDropDown from "./DeadLineDropDown";
@@ -14,8 +14,8 @@ const SwapForm = () => {
   const walletAddress = useSelector((state) => state?.wallet);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
-  const [fromToken, setFromToken] = useState("Select a token");
-  const [toToken, setToToken] = useState("Select a token");
+  const [fromToken, setFromToken] = useState("POX");
+  const [toToken, setToToken] = useState("USDX");
   const [showRecipient, setShowRecipient] = useState(false);
   const [slippage, setSlippage] = useState("");
   const [customSlippage, setCustomSlippage] = useState("");
@@ -24,6 +24,9 @@ const SwapForm = () => {
   const [swapArrowState, setSwapArrowState] = useState(true);
   const [debouncedAmount, setDebouncedAmount] = useState(fromAmount);
   const [bothTokenSelected, setBothTokenSelected] = useState(false);
+
+  const poxBalance = useSelector((state)=>state?.wallet?.poxBalance);
+  const usdxBalance = useSelector((state)=>state?.wallet?.UsdxBalance);
 
  // Handle input change with debounce
  const handleFromAmountChange = (e) => {
@@ -128,6 +131,7 @@ useEffect(() => {
 
   return (
     <div className="w-full pt-6 md:pt-12">
+        <p className="font-semibold text-white pb-2 text-right">Balance: {fromToken==="POX"?poxBalance:usdxBalance}</p>
       <InputField
         type="number"
         label="From"
@@ -160,6 +164,9 @@ useEffect(() => {
           color="white"
         />
       )}
+
+<p className="font-semibold text-white pb-2 text-right">Balance: {toToken==="POX"?poxBalance:usdxBalance}</p>
+
 
       <div className="flex justify-between border-[1px] rounded-lg px-4 py-3">
         <p className="text-white font-semibold ">{toAmount}</p>

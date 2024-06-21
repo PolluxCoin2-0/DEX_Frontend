@@ -52,25 +52,12 @@ export const getSwapAmount = async(amountIn,fromToken, toToken)=>{
     }
 
     try {
-        console.log(amountIn, from_Token,to_Token)
         const response = await axios.post(BASE_URL+"/getAmountsOut2",{
             amount:amountIn,
             token0:from_Token,
             token1:to_Token
         })
-        console.log(response?.data)
         return response?.data?.data;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-export const getReverseTokenAPI = async(amountIn)=>{
-    try {
-        const response = await axios.post(BASE_URL+"/getAmountIn",{
-            amountIn,
-        })
-        console.log(response?.data);
     } catch (error) {
         console.log(error);
     }
