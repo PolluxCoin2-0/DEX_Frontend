@@ -5,13 +5,14 @@ import InputField from "../components/InputField";
 import Logo from "../assets/Logo.png";
 import { IoAddOutline } from "react-icons/io5";
 import { GrSubtract } from "react-icons/gr";
-import { getSwap, getSwapAmount } from "../utils/Axios";
+import { getCalledBeforeSwap, getSwap, getSwapAmount } from "../utils/Axios";
 import { useSelector } from "react-redux";
 import SlippageDropDown from "./SlippageDropDown";
 import DeadLineDropDown from "./DeadLineDropDown";
+import polluxweb from "polluxweb";
 
 const SwapForm = () => {
-  const walletAddress = useSelector((state) => state?.wallet);
+  const walletAddress = useSelector((state) => state?.wallet.address);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
   const [fromToken, setFromToken] = useState("POX");
@@ -73,9 +74,24 @@ useEffect(() => {
     const send_to_api_deadline = customDeadLine?customDeadLine:deadLine
     const send_to_api_slippage = customSlippage?customSlippage:slippage
 
-    const data = await getSwap(walletAddress?.address, fromAmount, fromToken, toToken,send_to_api_slippage,send_to_api_deadline);
+    const data2 = await getCalledBeforeSwap(walletAddress);
+
+    const data = await getSwap(walletAddress, fromAmount, fromToken, toToken,send_to_api_slippage,send_to_api_deadline);
+    console.log(data?.data?.transaction);
+
+    console.log()
+
+    const signedTransaction = await window.pox.signdata(
+      data?.data?.transaction,
+            // walletAddress
+          );
+          console.log('Signed Transaction:', signedTransaction);
+          const result = await polluxweb.trx.sendRawTransaction(signedTransaction);
+          console.log(result);
+
     if(data?.data)
       {
+
         alert("Swap successfully!")
       }
       else{
@@ -130,7 +146,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="w-full pt-6 md:pt-12">
+    <div className="w-full pt-6">
         <p className="font-semibold text-white pb-2 text-right">Balance: {fromToken==="POX"?poxBalance:usdxBalance}</p>
       <InputField
         type="number"
@@ -150,7 +166,7 @@ useEffect(() => {
       {swapArrowState ? (
         <TbArrowsDownUp
           size={20}
-          className="my-4 md:my-8"
+          className="my-4 md:my-6"
           style={{ cursor: "pointer" }}
           onClick={handleReverseToken}
           color="white"
@@ -158,7 +174,7 @@ useEffect(() => {
       ) : (
         <TbArrowsUpDown
           size={20}
-          className="my-4 md:my-8"
+          className="my-4 md:my-6"
           style={{ cursor: "pointer" }}
           onClick={handleReverseToken}
           color="white"
@@ -191,7 +207,7 @@ useEffect(() => {
       setCustomDeadLine ={setCustomDeadLine}
       />
 
-      <div className="flex items-center justify-end mt-2 mb-6 w-full cursor-pointer">
+      <div className="flex items-center justify-end mt-2 mb-2 w-full cursor-pointer">
         <button
           onClick={() => setShowRecipient(!showRecipient)}
           className="flex items-center space-x-1 text-green-500"
@@ -227,7 +243,7 @@ useEffect(() => {
           onClick={handleSwap}
           className="font-bold w-full md:w-3/4 mt-6 rounded-md bg-[#F3BB1B] px-4 py-[7px] cursor-pointer"
         >
-          {walletAddress?.address ? "Swap" : "Connect To Wallet"}
+          {walletAddress ? "Swap" : "Connect To Wallet"}
         </button>
       </div>
     </div>

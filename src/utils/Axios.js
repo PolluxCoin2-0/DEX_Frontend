@@ -4,6 +4,16 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const POX_TOKEN_ADDRESS = import.meta.env.VITE_POX_TOKEN_ADDRESS;
 const USDX_TOKEN_ADDRESS = import.meta.env.VITE_USDX_TOKEN_ADDRESS;
 
+export const getCalledBeforeSwap = async(walletAddress)=>{
+    try {
+        const response = axios.get(BASE_URL+"getWallet",{
+            privateKey:walletAddress
+        })
+        console.log(response?.data)
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 export const getSwap = async (walletAddress, fromAmount, fromToken, toToken, slippage, deadLine) => {
     let from_Token;
@@ -50,7 +60,6 @@ export const getSwapAmount = async(amountIn,fromToken, toToken)=>{
     } else if (toToken === "USDX") {
         to_Token = USDX_TOKEN_ADDRESS;
     }
-
     try {
         const response = await axios.post(BASE_URL+"/getAmountsOut2",{
             amount:amountIn,
