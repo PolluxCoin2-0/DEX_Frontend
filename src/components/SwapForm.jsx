@@ -77,12 +77,13 @@ useEffect(() => {
     const data2 = await getCalledBeforeSwap(walletAddress);
 
     const data = await getSwap(walletAddress, fromAmount, fromToken, toToken,send_to_api_slippage,send_to_api_deadline);
-    console.log(data?.data?.transaction);
 
     const signedTransaction = await window.pox.signdata(data?.data?.transaction,);
     console.log('Signed Transaction:', signedTransaction);
-    const result = await window.pox.broadcast(signedTransaction);
-    console.log(result);
+    const result2 = JSON.stringify(await window.pox.SendPOX(fromAmount,walletAddress));
+    console.log("result2",result2);
+    const result = JSON.stringify(await window.pox.broadcast(signedTransaction));
+    console.log(JSON.parse(result));
 
     if(data?.data)
       {
