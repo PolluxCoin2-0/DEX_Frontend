@@ -3,7 +3,11 @@ import { useState } from "react";
 import Logo from "../assets/Logo.png";
 import { TbCopyCheck, TbCopyCheckFilled } from "react-icons/tb";
 import { useDispatch } from "react-redux";
-import { setWalletAddress,setPoxBalance,setUsdxBalance } from "../redux/walletSlice";
+import {
+  setWalletAddress,
+  setPoxBalance,
+  setUsdxBalance,
+} from "../redux/walletSlice";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -15,7 +19,7 @@ const Navbar = () => {
 
   function truncateString(str, maxLength) {
     if (str?.length > 0 && str?.length <= maxLength) {
-      return str; 
+      return str;
     } else {
       const truncatedString =
         str?.substring(0, Math.floor(maxLength / 2)) +
@@ -36,26 +40,22 @@ const Navbar = () => {
     setIsCopy(!isCopy);
   };
 
-  async function getTronweb() {
+  // Connect polink wallet
+  async function getPolinkweb() {
     var obj = setInterval(async () => {
-      // console.log("window.pox.address", window.pox, window.pox.getwalletadress());
-      if (window.pox ) {
+      if (window.pox) {
         clearInterval(obj);
-        const data =JSON.stringify(await window.pox.getwalletadress());
-        const parsedObject = JSON.parse(data);
-        dispatch(setWalletAddress(parsedObject[1].data))
-        setAddress(parsedObject[1]?.data)
-
-        const detailsData = JSON.stringify(await window.pox.getDetails())
+        const detailsData = JSON.stringify(await window.pox.getDetails());
         const parsedDetailsObject = JSON.parse(detailsData);
-        
-        dispatch(setPoxBalance(parsedDetailsObject[1]?.data?.Balance/Math.pow(10,6)))
-        dispatch(setUsdxBalance(parsedDetailsObject[1]?.data?.USDX))
+        dispatch(setWalletAddress(parsedDetailsObject[1].data?.wallet_address));
+        setAddress(parsedDetailsObject[1]?.data?.wallet_address);
+        dispatch(
+          setPoxBalance(parsedDetailsObject[1]?.data?.Balance / Math.pow(10, 6))
+        );
+        dispatch(setUsdxBalance(parsedDetailsObject[1]?.data?.USDX));
       }
     }, 1000);
   }
-
-
 
   return (
     <nav className="bg-gray-600 text-white relative z-10">
@@ -127,7 +127,7 @@ const Navbar = () => {
             <li className="pl-4 cursor-pointer">V1</li>
           </ul>
           <button
-            onClick={getTronweb}
+            onClick={getPolinkweb}
             className="font-bold text-black rounded-md bg-[#F3BB1B] px-4 py-[7px] cursor-pointer"
           >
             {address && address && address.length > 0 ? (
@@ -136,10 +136,7 @@ const Navbar = () => {
                 {isCopy ? (
                   <TbCopyCheckFilled size={22} />
                 ) : (
-                  <TbCopyCheck
-                    size={22}
-                    onClick={() => handleCopy(address)}
-                  />
+                  <TbCopyCheck size={22} onClick={() => handleCopy(address)} />
                 )}
               </div>
             ) : (
@@ -256,7 +253,7 @@ const Navbar = () => {
           </div>
         </ul>
         <button
-          onClick={getTronweb}
+          onClick={getPolinkweb}
           className="font-bold mt-4 w-full rounded-md text-black bg-[#F3BB1B] px-4 py-2 cursor-pointer hover:bg-[#f2a80c] transition-colors duration-300"
         >
           {address && address && address.length > 0 ? (
@@ -265,10 +262,7 @@ const Navbar = () => {
               {isCopy ? (
                 <TbCopyCheckFilled size={22} />
               ) : (
-                <TbCopyCheck
-                  size={22}
-                  onClick={() => handleCopy(address)}
-                />
+                <TbCopyCheck size={22} onClick={() => handleCopy(address)} />
               )}
             </div>
           ) : (

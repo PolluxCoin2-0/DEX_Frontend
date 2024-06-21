@@ -14,7 +14,7 @@
     "@reduxjs/toolkit": "^2.2.5",
     "axios": "^1.7.2",
     "ethers": "^6.12.1",
-    "polluxweb": "^1.1.1-stable",
+    "polluxweb": "^1.0.15",
     "primeicons": "^7.0.0",
     "primereact": "^10.6.6",
     "react": "^18.2.0",
