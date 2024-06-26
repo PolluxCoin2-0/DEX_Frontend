@@ -105,7 +105,7 @@ const PoolForm = () => {
         />
       </InputField>
 
-      <div className="flex flex-row justify-between items-center md:items-start md:space-x-4 text-white">
+      <div className="flex flex-row justify-between items-center md:items-start md:space-x-4 text-white pb-4">
         <IoAddOutline className="my-6 md:mt-12" />
         <p className="md:mt-12">Advanced Settings</p>
       </div>

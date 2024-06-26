@@ -61,7 +61,7 @@ const DeadLineDropDown = ({ deadLine, setDeadLine, customDeadLine, setCustomDead
         <div className='w-full'>
           <input
             type="number"
-            placeholder="Enter Deadline (00)"
+            placeholder="Enter Deadline"
             value={customDeadLine}
             onChange={handleCustomChange}
             className="bg-white text-black rounded-xl px-4 py-2 ml-2 outline-none w-full"

@@ -19,13 +19,13 @@ export const getSwap = async (walletAddress, fromAmount, fromToken, toToken, sli
     let from_Token;
     let to_Token;
 
-    if (fromToken === "POX") {
+    if (fromToken === "UVI") {
         from_Token = POX_TOKEN_ADDRESS;
     } else if (fromToken === "USDX") {
         from_Token = USDX_TOKEN_ADDRESS;
     }
 
-    if (toToken === "POX") {
+    if (toToken === "UVI") {
         to_Token = POX_TOKEN_ADDRESS;
     } else if (toToken === "USDX") {
         to_Token = USDX_TOKEN_ADDRESS;
@@ -49,13 +49,13 @@ export const getSwapAmount = async(amountIn,fromToken, toToken)=>{
     let from_Token;
     let to_Token;
 
-    if (fromToken === "POX") {
+    if (fromToken === "UVI") {
         from_Token = POX_TOKEN_ADDRESS;
     } else if (fromToken === "USDX") {
         from_Token = USDX_TOKEN_ADDRESS;
     }
 
-    if (toToken === "POX") {
+    if (toToken === "UVI") {
         to_Token = POX_TOKEN_ADDRESS;
     } else if (toToken === "USDX") {
         to_Token = USDX_TOKEN_ADDRESS;
@@ -76,13 +76,13 @@ export const getAddLiquidity = async (walletAddress, fromAmount, toAmount, fromT
     let from_Token;
     let to_Token;
 
-    if (fromToken === "POX") {
+    if (fromToken === "UVI") {
         from_Token = POX_TOKEN_ADDRESS;
     } else if (fromToken === "USDX") {
         from_Token = USDX_TOKEN_ADDRESS;
     }
 
-    if (toToken === "POX") {
+    if (toToken === "UVI") {
         to_Token = POX_TOKEN_ADDRESS;
     } else if (toToken === "USDX") {
         to_Token = USDX_TOKEN_ADDRESS;

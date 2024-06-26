@@ -26,7 +26,7 @@ const SlippageDropDown = ({ slippage, setSlippage, customSlippage, setCustomSlip
       <label htmlFor="slippage" className="text-white font-semibold">
         Slippage (%):
       </label>
-      <div className={`relative inline-block w-full ${slippage === "custom" ? "flex w-full" : ""}`}>
+      {/* <div className={`relative inline-block w-full ${slippage === "custom" ? "flex w-full" : ""}`}>
         <button
           onClick={toggleDropdown}
           className="bg-white text-black rounded-xl px-4 py-2 outline-none w-full text-left"
@@ -60,14 +60,14 @@ const SlippageDropDown = ({ slippage, setSlippage, customSlippage, setCustomSlip
         <div className='w-full'>
           <input
             type="number"
-            placeholder="Enter slippage (00)"
+            placeholder="Enter slippage"
             value={customSlippage}
             onChange={handleCustomChange}
             className="bg-white text-black rounded-xl px-4 py-2 ml-2 outline-none w-full"
           />
         </div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
