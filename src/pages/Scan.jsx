@@ -3,6 +3,8 @@ import Search from "../components/Search";
 import TableCom from "../components/TableCom";
 import PolicyOptions from "../components/PolicyOptions";
 import SwitchComp from "../components/SwitchComp";
+import { useEffect, useState } from "react";
+import { getPairLength, getReserves } from "../utils/Axios";
 
 const hotTokens =[
   "Name",
@@ -32,6 +34,21 @@ const transctions = [
 ]
 
 const Scan = () => {
+  const [data, setData] = useState({});
+  const [pairLength, setPairLength] = useState(0);
+
+  useEffect(()=>{
+    const fetchdata=async()=>{
+      const data = await getReserves();
+      const pairLength = await getPairLength();
+      setPairLength(pairLength?.data)
+      setData(data?.data);
+    }
+
+    fetchdata();
+  },[])
+
+
   return (
     <div className="px-4 sm:px-8 md:px-12 py-6">
       <Search />
@@ -40,10 +57,10 @@ const Scan = () => {
       sm:items-center space-y-2 sm:space-y-0 sm:space-x-6 text-white"
       >
         <p className="text-lg md:text-xl font-bold">
-          POX Price: <span className="text-green-500">$0.1223</span>
+          POX Price: <span className="text-green-500">${data?.price}</span>
         </p>
         <p className="font-medium">
-          Pairs: <span className="text-green-500">20,606</span>
+          Pairs: <span className="text-green-500">{pairLength}</span>
         </p>
         <p className="font-medium">
           Transactions (24hr): <span className="text-green-500">2,464</span>
@@ -76,6 +93,8 @@ const Scan = () => {
           <AreaChartComp />
         </div>
       </div>
+
+      {/* Hot Tokens */}
       <div className="pl-4">
         <p className="font-medium text-lg mt-6 mb-2 text-white">Hot Tokens</p>
         <TableCom
@@ -83,12 +102,16 @@ const Scan = () => {
           attributesArray={hotTokens}
         />
       </div>
+
+      {/* Trading Pair */}
       <div className="pl-4">
         <p className="font-medium text-lg mt-6 mb-2 text-white">Trading Pair</p>
         <TableCom 
         tableType="tradingpair"
         attributesArray={tradingPair} />
       </div>
+
+      {/* Transactions */}
       <div className="pl-4">
         <p className="font-medium text-lg mt-6 mb-2 text-white">Transactions</p>
         <TableCom
