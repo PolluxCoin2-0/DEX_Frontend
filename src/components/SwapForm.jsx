@@ -20,9 +20,7 @@ const SwapForm = () => {
   const [toToken, setToToken] = useState("USDX");
   const [showRecipient, setShowRecipient] = useState(false);
   const [slippage, setSlippage] = useState("");
-  const [customSlippage, setCustomSlippage] = useState("");
   const [deadLine, setDeadLine] = useState("");
-  const [customDeadLine, setCustomDeadLine] = useState("");
   const [swapArrowState, setSwapArrowState] = useState(true);
   const [debouncedAmount, setDebouncedAmount] = useState(fromAmount);
   const [bothTokenSelected, setBothTokenSelected] = useState(false);
@@ -73,9 +71,6 @@ const SwapForm = () => {
       return;
     }
 
-    const send_to_api_deadline = customDeadLine ? customDeadLine : deadLine;
-    const send_to_api_slippage = customSlippage ? customSlippage : slippage;
-
     const data2 = await getCalledBeforeSwap(walletAddress);
 
     const data = await getSwap(
@@ -83,8 +78,8 @@ const SwapForm = () => {
       fromAmount,
       fromToken,
       toToken,
-      send_to_api_slippage,
-      send_to_api_deadline
+      slippage,
+      deadLine
     );
 
     const signedTransaction = await window.pox.signdata(
@@ -154,6 +149,8 @@ const SwapForm = () => {
     }
   };
 
+  console.log(fromAmount, toAmount)
+
   return (
     <div className="w-full pt-6 ">
       <div className="flex justify-between items-center pb-4 text-white">
@@ -165,19 +162,15 @@ const SwapForm = () => {
 
        {showSetting && (
         <div className="mb-4 absolute w-full flex justify-end z-30">
-          <div className="bg-[#1B1B1B] px-6 flex flex-col items-end rounded-2xl border-2 border-[#333333]">
+          <div className="bg-[#1B1B1B] px-6 pb-6 flex flex-col items-end rounded-2xl border-2 border-[#333333]">
          <SlippageDropDown
          slippage={slippage}
          setSlippage={setSlippage}
-         customSlippage={customSlippage}
-         setCustomSlippage={setCustomSlippage}
        />
  
        <DeadLineDropDown
        deadLine={deadLine} 
        setDeadLine={setDeadLine}
-       customDeadLine = {customDeadLine}
-       setCustomDeadLine ={setCustomDeadLine}
        />
        </div>
        </div>
@@ -191,10 +184,12 @@ const SwapForm = () => {
         <div className="flex justify-between items-center">
           <input
             type="number"
-            className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl"
+            className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl w-full"
             placeholder="0"
+            onChange={handleFromAmountChange}
+            value={fromAmount}
           />
-          <div className="bg-[#181717] px-4 py-2 rounded-2xl border-[1px] border-[#333333]  shadow-inner">
+          <div className="bg-[#181717] px-4 py-2 rounded-2xl border-[1px] border-[#333333] shadow-inner">
             <DropdownButton
               selectedOption={fromToken}
               onOptionSelect={handleFromTokenSelect}
@@ -231,10 +226,11 @@ const SwapForm = () => {
         <div className="flex justify-between items-center">
           <input
             type="number"
-            className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl"
+            className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl w-full"
             placeholder="0"
+            value={toAmount}
           />
-          <div className="bg-[#181717] px-4 py-2 rounded-2xl border-[1px] border-[#333333]  shadow-inner">
+          <div className="bg-[#181717] px-3 py-2 rounded-2xl border-[1px] border-[#333333]  shadow-inner">
             <DropdownButton
               selectedOption={toToken}
               onOptionSelect={handleToTokenSelect}
@@ -245,95 +241,14 @@ const SwapForm = () => {
       </div>
       </div>
       <div className="text-center">
-        {/* <p className="text-[#F3BB1B] cursor-pointer mt-2 font-bold">View Token</p>
-
-        <div className="flex items-center justify-center space-x-2 py-2 md:py-4 font-semibold">
-          <img src={Logo} alt="pox-logo" className="w-8 h-8 md:h-auto" />
-          <p className="text-white font-bold">POX</p>
-        </div> */}
-
-        <button
-          onClick={handleSwap}
-          className="font-bold w-full mt-6 rounded-2xl bg-[#F3BB1B] px-4 py-4 cursor-pointer text-xl"
+      <button
+      onClick={handleSwap}
+      className="font-bold w-full mt-6 rounded-2xl bg-[#F3BB1B] px-4 py-4 cursor-pointer text-xl"
         >
-          {walletAddress ? "Swap" : "Connect To Wallet"}
-        </button>
+      {walletAddress ? "Swap" : "Connect To Wallet"}
+      </button>
       </div> 
       </div>
-
-      {/* <p className="font-semibold text-white pb-2 text-right">Balance: {fromToken==="POX"?poxBalance:usdxBalance}</p>
-      <InputField
-        type="number"
-        label="From"
-        placeholder="Enter an amount"
-        value={fromAmount}
-        onChange={handleFromAmountChange}
-        disabled={!bothTokenSelected} 
-      >
-        <DropdownButton
-          selectedOption={fromToken}
-          onOptionSelect={handleFromTokenSelect}
-          otherSelectedOption={toToken}
-        />
-      </InputField>
-
-     
-
-      <div className="flex flex-row justify-between items-center">
-        <p className="font-semibold text-white pb-2">To</p>
-<p className="font-semibold text-white pb-2">Balance: {toToken==="POX"?poxBalance:usdxBalance}</p>
-      </div>
-
-
-
-      <div className="flex justify-between border-[1px] rounded-lg px-4 py-3">
-        <p className="text-white font-semibold ">{toAmount}</p>
-        <DropdownButton
-          selectedOption={toToken}
-          onOptionSelect={handleToTokenSelect}
-          otherSelectedOption={fromToken}
-        />
-      </div>
-
-      <SlippageDropDown
-        slippage={slippage}
-        setSlippage={setSlippage}
-        customSlippage={customSlippage}
-        setCustomSlippage={setCustomSlippage}
-      />
-
-      <DeadLineDropDown
-      deadLine={deadLine} 
-      setDeadLine={setDeadLine}
-      customDeadLine = {customDeadLine}
-      setCustomDeadLine ={setCustomDeadLine}
-      />
-
-      <div className="flex items-center justify-end mt-2 mb-2 w-full cursor-pointer">
-        <button
-          onClick={() => setShowRecipient(!showRecipient)}
-          className="flex items-center space-x-1 text-green-500"
-        >
-          {showRecipient ? (
-            <GrSubtract size={20} />
-          ) : (
-            <IoAddOutline size={20} />
-          )}
-          <p className="font-bold">
-            {showRecipient ? "Remove Recipient" : "Add Recipient"}
-          </p>
-        </button>
-      </div>
-
-      {showRecipient && (
-        <InputField
-          type="text"
-          label="Recipient"
-          placeholder="Input wallet Address"
-          onChange={(e) => setFromAmount(e.target.value)}
-        />
-      )}
-      */}
     </div>
   );
 };
