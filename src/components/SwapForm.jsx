@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { TbArrowsDownUp, TbArrowsUpDown } from "react-icons/tb";
 import DropdownButton from "../components/DropDownButton";
-import InputField from "../components/InputField";
-import Logo from "../assets/Logo.png";
-import { IoAddOutline } from "react-icons/io5";
-import { GrSubtract } from "react-icons/gr";
 import { getCalledBeforeSwap, getSwap, getSwapAmount } from "../utils/Axios";
 import { useSelector } from "react-redux";
 import SlippageDropDown from "./SlippageDropDown";
@@ -149,8 +145,6 @@ const SwapForm = () => {
     }
   };
 
-  console.log(fromAmount, toAmount)
-
   return (
     <div className="w-full pt-6 ">
       <div className="flex justify-between items-center pb-4 text-white">
@@ -178,9 +172,12 @@ const SwapForm = () => {
 
      <div className="">
       <div className="bg-[#1B1B1B] p-6 rounded-2xl flex flex-col">
+        <div className="flex justify-between">
         <label className="font-semibold text-[#8a8a8a] text-lg pb-4">
           Sell
         </label>
+        <p className="text-white font-semibold">Balance:{poxBalance}</p>
+        </div>
         <div className="flex justify-between items-center">
           <input
             type="number"
@@ -222,7 +219,10 @@ const SwapForm = () => {
       </div>
 
       <div className="bg-[#1B1B1B] p-6 rounded-2xl flex flex-col -mt-7">
+      <div className="flex justify-between">
         <label className="font-semibold text-[#8a8a8a] text-lg pb-4">Buy</label>
+        <p className="text-white font-semibold">Balance:{usdxBalance}</p>
+        </div>
         <div className="flex justify-between items-center">
           <input
             type="number"

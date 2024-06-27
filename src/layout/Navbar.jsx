@@ -68,7 +68,7 @@ const Navbar = () => {
               width={30}
               className="transition-transform duration-300 hover:scale-110"
             />
-            <p className="border-r-2 pr-2 font-bold">UVI SWAP</p>
+            <p className="border-r-2 pr-2 font-bold text-2xl">UVI SWAP</p>
           </Link>
           <div className="hidden md:flex items-center space-x-6">
             <ul className="flex justify-between space-x-12 font-bold">
@@ -105,7 +105,7 @@ const Navbar = () => {
                   Scan
                 </li>
               </Link>
-              <Link to="/lppools">
+              <Link to="">
                 <li
                   className={`cursor-pointer ${
                     currentPath === "/lppools"
@@ -230,7 +230,7 @@ const Navbar = () => {
             Scan
           </Link>
           <Link
-            to="/lppools"
+            to=""
             onClick={toggleMenu}
             className={`block ${
               currentPath === "/lppools"
