@@ -108,3 +108,21 @@ export const getAddLiquidity = async (walletAddress, fromAmount, toAmount, fromT
         console.log(error);
     }
 };
+
+export const getReserves = async()=>{
+    try {
+        const response = await axios.get(BASE_URL+"/getReserves");
+        return response?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getPairLength = async()=>{
+    try {
+        const response = await axios.get(BASE_URL+"/getPairsLength");
+        return response?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
