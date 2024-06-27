@@ -7,7 +7,7 @@ import store from "./redux/store";
 
 function App() {
   return (
-    <div className="app-background">
+    <div className="bg-black">
       <Provider store={store}>
         <Router>
           <Navbar />

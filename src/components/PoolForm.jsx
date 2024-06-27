@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import DropdownButton from "../components/DropDownButton";
-import InputField from "../components/InputField";
-import { IoAddOutline, IoArrowBackOutline } from "react-icons/io5";
 import PoolTable from "./PoolTable";
 import { getAddLiquidity } from "../utils/Axios";
 import SuccessModal from "./SuccessModal";
 import { useSelector } from "react-redux";
 import DeadLineDropDown from "./DeadLineDropDown";
+import { TbArrowsDownUp, TbArrowsUpDown } from "react-icons/tb";
+import { RiSettings5Fill } from "react-icons/ri";
 
 const PoolForm = () => {
   const [fromAmount, setFromAmount] = useState(0);
@@ -14,13 +14,13 @@ const PoolForm = () => {
   const [fromToken, setFromToken] = useState("Select a token");
   const [toToken, setToToken] = useState("Select a token");
   const [error, setError] = useState("");
-  const [showPoolTable, setShowPoolTable] = useState(true);
   const [isShowModal, setIsShowModal] = useState(false);
   const walletAddress = useSelector((state) => state?.wallet);
   const [deadLine, setDeadLine] = useState("");
-  const [customDeadLine, setCustomDeadLine] = useState("");
+  const [swapArrowState, setSwapArrowState] = useState(true);
   const [bothTokenSelected, setBothTokenSelected] = useState(false);
-  
+  const [showSetting, setShowSetting] = useState(false);
+
   const handleGetAddLiquidity = async () => {
     const isValidInput =
       fromAmount &&
@@ -31,8 +31,13 @@ const PoolForm = () => {
       return;
     }
 
-    const send_to_api_deadline = customDeadLine?customDeadLine:deadLine
-    
+    console.log(walletAddress?.address,
+      fromAmount,
+      toAmount,
+      fromToken,
+      toToken,
+      deadLine)
+
     try {
       const data = await getAddLiquidity(
         walletAddress?.address,
@@ -40,7 +45,7 @@ const PoolForm = () => {
         toAmount,
         fromToken,
         toToken,
-        send_to_api_deadline
+        deadLine
       );
 
       if (data?.statusCode === 200) {
@@ -72,73 +77,145 @@ const PoolForm = () => {
 
   useEffect(() => {
     const checkBothTokensSelected = () => {
-      setBothTokenSelected(fromToken !== "Select a token" && toToken !== "Select a token");
+      setBothTokenSelected(
+        fromToken !== "Select a token" && toToken !== "Select a token"
+      );
     };
 
     // if (fromToken === "Select a token" || toToken === "Select a token") {
     //   alert("Please select both tokens before swapping.");
     //   return;
     // }else{
-      checkBothTokensSelected();
+    checkBothTokensSelected();
     // }
-
   }, [fromToken, toToken]);
+
+  const handleReverseToken = async () => {
+    if (fromToken === "Select a token" || toToken === "Select a token") {
+      alert("Please select both tokens before swapping.");
+      return;
+    }
+
+    // Perform the swap
+    setSwapArrowState(!swapArrowState);
+    setFromAmount(toAmount);
+    setToAmount(fromAmount);
+    setFromToken(toToken);
+    setToToken(fromToken);
+
+    // await getReverseTokenAPI(fromAmount);
+  };
+
+  const handleFromAmountChange = (e) => {
+    const newAmount = e.target.value;
+    setFromAmount(newAmount);
+  };
+
+  const handleToAmountChange = (e) => {
+    const newAmount = e.target.value;
+    setToAmount(newAmount);
+  };
 
   return (
     <div className="w-full text-center pt-5 pb-10">
-      <div className=" text-white flex items-center justify-center space-x-6 pb-10">
-        <IoArrowBackOutline />
-        <p className="font-bold">Add Liquidity</p>
-      </div>
-      <InputField
-        type="number"
-        label="Input"
-        placeholder="Enter an amount"
-        value={fromAmount}
-        onChange={(e) => setFromAmount(e.target.value)}
-        disabled={!bothTokenSelected} 
-      >
-        <DropdownButton
-          selectedOption={fromToken}
-          onOptionSelect={handleFromTokenSelect}
-          otherSelectedOption={toToken}
-        />
-      </InputField>
-
-      <div className="flex flex-row justify-between items-center md:items-start md:space-x-4 text-white">
-        <IoAddOutline className="my-6 md:mt-12" />
-        <p className="md:mt-12">Advanced Settings</p>
-      </div>
-
-      <InputField
-        type="number"
-        label="Input"
-        placeholder="Enter an amount"
-        value={toAmount}
-        onChange={(e) => setToAmount(e.target.value)}
-        disabled={!bothTokenSelected} 
-      >
-        <DropdownButton
-          selectedOption={toToken}
-          onOptionSelect={handleToTokenSelect}
-          otherSelectedOption={fromToken}
-        />
-      </InputField>
-
-      <div className="pt-6 text-left">
-        <DeadLineDropDown
-          deadLine={deadLine}
-          setDeadLine={setDeadLine}
-          customDeadLine={customDeadLine}
-          setCustomDeadLine={setCustomDeadLine}
+      <div className="flex justify-between items-center pb-4 text-white">
+        <p className="font-semibold text-lg pl-2">Pool</p>
+        <RiSettings5Fill
+          color="white"
+          size={24}
+          className="cursor-pointer"
+          onClick={() => setShowSetting(!showSetting)}
         />
       </div>
 
-      {showPoolTable && <PoolTable />}
+      <div className="relative">
+        {showSetting && (
+          <div className="mb-4 absolute w-full flex justify-end z-30">
+            <div className="bg-[#1B1B1B] px-6 pb-6 flex flex-col items-end rounded-2xl border-2 border-[#333333]">
+              <DeadLineDropDown deadLine={deadLine} setDeadLine={setDeadLine} />
+            </div>
+          </div>
+        )}
+
+        <div className="">
+          <div className="bg-[#1B1B1B] p-6 rounded-2xl flex flex-col">
+            <div className="flex justify-between">
+              <label className="font-semibold text-[#8a8a8a] text-lg pb-4">
+                Token A
+              </label>
+            </div>
+            <div className="flex justify-between items-center">
+              <input
+                type="number"
+                className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl w-full"
+                placeholder="0"
+                onChange={handleFromAmountChange}
+                value={fromAmount}
+                disabled={!bothTokenSelected}
+              />
+              <div className="bg-[#181717] px-4 py-2 rounded-2xl border-[1px] border-[#333333] shadow-inner whitespace-nowrap">
+                <DropdownButton
+                  selectedOption={fromToken}
+                  onOptionSelect={handleFromTokenSelect}
+                  otherSelectedOption={toToken}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-center -mt-5">
+            <div className="inline-block border-4 border-black px-4 rounded-lg bg-[#1B1B1B]">
+              {swapArrowState ? (
+                <TbArrowsDownUp
+                  size={24}
+                  className="my-4"
+                  style={{ cursor: "pointer" }}
+                  onClick={handleReverseToken}
+                  color="white"
+                />
+              ) : (
+                <TbArrowsUpDown
+                  size={24}
+                  className="my-4"
+                  style={{ cursor: "pointer" }}
+                  onClick={handleReverseToken}
+                  color="white"
+                />
+              )}
+            </div>
+          </div>
+
+          <div className="bg-[#1B1B1B] p-6 rounded-2xl flex flex-col -mt-9">
+            <div className="flex justify-between">
+              <label className="font-semibold text-[#8a8a8a] text-lg pb-4">
+                Token B
+              </label>
+            </div>
+            <div className="flex justify-between items-center">
+              <input
+                type="number"
+                className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl w-full"
+                placeholder="0"
+                value={toAmount}
+                onChange={handleToAmountChange}
+                disabled={!bothTokenSelected}
+              />
+              <div className="bg-[#181717] px-3 py-2 rounded-2xl border-[1px] border-[#333333]  shadow-inner whitespace-nowrap">
+                <DropdownButton
+                  selectedOption={toToken}
+                  onOptionSelect={handleToTokenSelect}
+                  otherSelectedOption={fromToken}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <PoolTable />
       <button
         // onClick={() => setShowPoolTable(!showPoolTable)}
         onClick={handleGetAddLiquidity}
-        className="font-bold w-full md:w-3/4 mt-14 rounded-md bg-[#F3BB1B] px-4 py-[10px] cursor-pointer"
+        className="font-bold w-full mt-14 rounded-md bg-[#F3BB1B] px-4 py-[10px] cursor-pointer"
       >
         {walletAddress?.address ? "Add Liquidity" : "Connect To Wallet"}
       </button>

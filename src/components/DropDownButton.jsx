@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
 const DropdownButton = ({ selectedOption, onOptionSelect, otherSelectedOption }) => {
@@ -30,10 +30,10 @@ const DropdownButton = ({ selectedOption, onOptionSelect, otherSelectedOption })
       {isOpen && (
         <div
           id="dropdown"
-          className="absolute z-10 mt-2 divide-y divide-gray-100 rounded-lg shadow w-44 bg-white"
+          className="absolute -ml-4 z-10 mt-3 divide-y divide-gray-100 rounded-lg shadow w-44 bg-white "
         >
           <ul className="py-0 divide-y-2 divide-slate-400/25 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-            {['POX', 'USDX',].map((token) => (
+            {['UVI', 'USDX',].map((token) => (
               <li key={token}>
                 <p
                   className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#4B5563] hover:text-white text-black font-semibold cursor-pointer rounded-md 

@@ -1,5 +1,4 @@
 import AnimatedNumber from "../components/AnimatingNumber";
-import Glassmorphosim from "../components/Glassmorphosim";
 import { BsQuestionCircle } from "react-icons/bs";
 import { IoMdArrowForward } from "react-icons/io";
 import { IoWalletOutline } from "react-icons/io5";
@@ -12,7 +11,7 @@ const Pool = () => {
   const [showPoolForm, setShowPoolForm] = useState(false);
 
   return (
-    <div className="flex pt-0 md:pt-36 lg:pt-36 min-h-screen flex-col md:items-center justify-center md:justify-start md:py-36 px-4">
+    <div className="flex pt-20 md:pt-12 lg:pt-12 min-h-screen flex-col items-center px-4">
       <div className="text-center">
         <p className="text-2xl pb-1 text-white font-bold">Total Value Locked</p>
         <p className="text-5xl text-[#F3BB1B] font-bold flex items-center justify-center ">
@@ -20,9 +19,8 @@ const Pool = () => {
         </p>
       </div>
       <div className="pt-6 pb-2 w-full md:w-1/3 md:pt-12">
-        <Glassmorphosim>
           {!showPoolForm ? (
-            <>
+            <div className="glassmorph-container">
               <button
                 onClick={() => setShowPoolForm(!showPoolForm)}
                 className="font-bold w-full md:w-2/3 mt-6 rounded-md bg-[#fcc93f] px-4 py-[14px] text-xl cursor-pointer"
@@ -45,14 +43,13 @@ const Pool = () => {
                 </button>
                 <IoMdArrowForward size={24} color="white" />
               </div>
-            </>
+            </div>
           ) : (
             <PoolForm />
           )}
-        </Glassmorphosim>
       </div>
 
-      <div className="mt-12 md:mt-0 lg:mt-0">
+      <div className="w-full pb-6 mt-0 md:mt-0 lg:mt-0">
         <PolicyOptions />
       </div>
     </div>

@@ -58,17 +58,17 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="bg-gray-600 text-white relative z-10">
-      <div className="flex justify-between items-center px-4 md:px-6 py-3">
+    <nav className=" text-white relative z-10">
+      <div className="flex justify-between items-center px-4 md:px-6 py-6">
         <div className="flex items-center">
           <Link to="/" className="flex items-center space-x-2 pr-20">
             <img
               src={Logo}
-              alt="pox-logo"
+              alt="uvi-logo"
               width={30}
               className="transition-transform duration-300 hover:scale-110"
             />
-            <p className="border-r-2 pr-2 font-bold">POX SWAP</p>
+            <p className="border-r-2 pr-2 font-bold text-2xl">UVI SWAP</p>
           </Link>
           <div className="hidden md:flex items-center space-x-6">
             <ul className="flex justify-between space-x-12 font-bold">
@@ -105,7 +105,7 @@ const Navbar = () => {
                   Scan
                 </li>
               </Link>
-              <Link to="/lppools">
+              <Link to="">
                 <li
                   className={`cursor-pointer ${
                     currentPath === "/lppools"
@@ -172,11 +172,11 @@ const Navbar = () => {
           <Link to="/" className="flex items-center space-x-2">
             <img
               src={Logo}
-              alt="pox-logo"
+              alt="uvi-logo"
               width={30}
               className="transition-transform duration-300 hover:scale-110"
             />
-            <p className="font-bold">POX SWAP</p>
+            <p className="font-bold">UVI SWAP</p>
           </Link>
           <button className="focus:outline-none" onClick={toggleMenu}>
             <svg
@@ -230,7 +230,7 @@ const Navbar = () => {
             Scan
           </Link>
           <Link
-            to="/lppools"
+            to=""
             onClick={toggleMenu}
             className={`block ${
               currentPath === "/lppools"

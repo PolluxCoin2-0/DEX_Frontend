@@ -45,7 +45,7 @@
   left: -100%;
   width: 70%;
   height: 100vh;
-  background: #4B5563;
+  background: black;
   color: white;
   transition: left 0.3s ease-in-out;
   padding: 2rem 1rem;
@@ -107,4 +107,21 @@
 .p-paginator .p-paginator-page:hover:not(.p-highlight) {
   background-color: black;
   color: white;
+}
+
+/* *****Glassmorphism****** */
+.glassmorph-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.1); 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2); 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
