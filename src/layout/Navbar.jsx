@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import Logo from "../assets/Logo.png";
+import Logo from "../assets/Logo.webp";
 import { TbCopyCheck, TbCopyCheckFilled } from "react-icons/tb";
 import { useDispatch } from "react-redux";
 import {
@@ -66,7 +66,7 @@ const Navbar = () => {
               src={Logo}
               alt="uvi-logo"
               width={30}
-              className="transition-transform duration-300 hover:scale-110"
+              className=""
             />
             <p className="border-r-2 pr-2 font-bold text-2xl">UVI SWAP</p>
           </Link>
@@ -174,7 +174,7 @@ const Navbar = () => {
               src={Logo}
               alt="uvi-logo"
               width={30}
-              className="transition-transform duration-300 hover:scale-110"
+              className=""
             />
             <p className="font-bold">UVI SWAP</p>
           </Link>

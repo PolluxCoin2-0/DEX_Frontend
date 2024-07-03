@@ -11,7 +11,7 @@ const Home = () => {
         <p className="text-lg md:text-2xl pb-1 text-white font-bold">
           Total Value Locked
         </p>
-        <p className="text-3xl md:text-5xl text-[#F3BB1B] font-bold flex items-center justify-center">
+        <p className="sm:text-3xl md:text-5xl lg:text-5xl xl:lg:text-5xl 2xl:lg:text-5xl text-[#F3BB1B] font-bold flex items-center justify-center">
           $ <AnimatedNumber value={totalValueLocked} />
         </p>
       </div>

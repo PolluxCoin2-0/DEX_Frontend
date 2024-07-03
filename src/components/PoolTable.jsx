@@ -1,5 +1,5 @@
-import Logo from "../assets/Logo.png";
-import USDX from "../assets/UXDX.png";
+import Logo from "../assets/Logo.webp";
+import USDX from "../assets/UXDX.webp";
 
 const PoolTable = () => {
   return (
@@ -25,7 +25,7 @@ const PoolTable = () => {
             <p className="font-bold">POX/USDX</p>
         </div>
         <div>
-            <p className="font-bold">USDX/POX</p>
+            <p className="font-bold">USwebpPOX</p>
         </div>
         <div>
             <p className="font-bold">Share of Pool</p>

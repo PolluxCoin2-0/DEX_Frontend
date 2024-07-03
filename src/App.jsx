@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { Home, Pool, Scan } from "./pages";
+import { ErrorPage, Home, Pool, Scan } from "./pages";
 import Navbar from "./layout/Navbar";
 import { Provider } from "react-redux";
 import store from "./redux/store";
@@ -16,6 +16,7 @@ function App() {
             <Route path="/swap" element={<Home />} />
             <Route path="/pool" element={<Pool />} />
             <Route path="/scan" element={<Scan />} />
+            <Route path="*" element={<ErrorPage />} />
           </Routes>
         </Router>
       </Provider>
