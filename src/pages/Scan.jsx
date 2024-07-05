@@ -48,6 +48,9 @@ const Scan = () => {
     fetchdata();
   },[])
 
+  console.log("data",data);
+  console.log("pairlength",pairLength);
+
 
   return (
     <div className="px-4 sm:px-8 md:px-12 py-6">
@@ -57,7 +60,7 @@ const Scan = () => {
       sm:items-center space-y-2 sm:space-y-0 sm:space-x-6 text-white"
       >
         <p className="text-lg md:text-xl font-bold">
-          POX Price: <span className="text-green-500">${data?.price && data?.price}</span>
+          POX Price: <span className="text-green-500">${data?.pricePOX && data?.pricePOX}</span>
         </p>
         <p className="font-medium">
           Pairs: <span className="text-green-500">{pairLength && pairLength}</span>
