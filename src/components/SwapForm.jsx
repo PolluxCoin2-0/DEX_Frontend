@@ -12,7 +12,7 @@ const SwapForm = () => {
   const walletAddress = useSelector((state) => state?.wallet.address);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
-  const [fromToken, setFromToken] = useState("UVI");
+  const [fromToken, setFromToken] = useState("POX");
   const [toToken, setToToken] = useState("USDX");
   const [showRecipient, setShowRecipient] = useState(false);
   const [slippage, setSlippage] = useState("");
@@ -49,6 +49,7 @@ const SwapForm = () => {
     const fetchSwapAmount = async () => {
       if (debouncedAmount) {
         const data = await getSwapAmount(debouncedAmount, fromToken, toToken);
+        console.log("data",data);
         setToAmount(Number(data));
       } else {
         setToAmount(0);
