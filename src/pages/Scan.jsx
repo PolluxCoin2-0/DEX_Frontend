@@ -57,10 +57,10 @@ const Scan = () => {
       sm:items-center space-y-2 sm:space-y-0 sm:space-x-6 text-white"
       >
         <p className="text-lg md:text-xl font-bold">
-          POX Price: <span className="text-green-500">${data?.price}</span>
+          POX Price: <span className="text-green-500">${data?.price && data?.price}</span>
         </p>
         <p className="font-medium">
-          Pairs: <span className="text-green-500">{pairLength}</span>
+          Pairs: <span className="text-green-500">{pairLength && pairLength}</span>
         </p>
         <p className="font-medium">
           Transactions (24hr): <span className="text-green-500">2,464</span>
