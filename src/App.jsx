@@ -9,7 +9,11 @@ function App() {
   return (
     <div className="bg-black">
       <Provider store={store}>
-        <Router>
+        <div className="h-screen bg-black flex justify-center items-center app-bg">
+          <p className="text-white text-7xl z-30">Coming Soon...</p>
+        </div>
+
+        {/* <Router>
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
@@ -18,7 +22,7 @@ function App() {
             <Route path="/scan" element={<Scan />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
-        </Router>
+        </Router> */}
       </Provider>
     </div>
   );
