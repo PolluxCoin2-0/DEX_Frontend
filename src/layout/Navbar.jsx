@@ -68,7 +68,7 @@ const Navbar = () => {
               width={30}
               className=""
             />
-            <p className="border-r-2 pr-2 font-bold text-2xl">UVI SWAP</p>
+            <p className="border-r-2 pr-2 font-bold text-2xl whitespace-nowrap">UVI SWAP</p>
           </Link>
           <div className="hidden md:flex items-center space-x-6">
             <ul className="flex justify-between space-x-12 font-bold">
@@ -107,9 +107,9 @@ const Navbar = () => {
               </Link>
               <Link to="">
                 <li
-                  className={`cursor-pointer ${
+                  className={`cursor-pointer whitespace-nowrap mr-4 ${
                     currentPath === "/lppools"
-                      ? "text-black rounded-lg bg-yellow-400 px-4 py-[1px]"
+                      ? "text-black rounded-lg bg-yellow-400 px-4 py-[1px] "
                       : ""
                   }`}
                 >

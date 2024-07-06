@@ -11,6 +11,11 @@ import { useSelector } from "react-redux";
 import SlippageDropDown from "./SlippageDropDown";
 import DeadLineDropDown from "./DeadLineDropDown";
 import { RiSettings5Fill } from "react-icons/ri";
+import { useDispatch } from "react-redux";
+import {
+  setPoxBalance,
+  setUsdxBalance,
+} from "../redux/walletSlice";
 import {
   to18Decimal,
   to6Decimal,
@@ -19,28 +24,30 @@ import {
 } from "../utils/converter";
 
 const SwapForm = () => {
+  const dispatch = useDispatch();
+  const settingsRef = useRef(null);
   const walletAddress = useSelector((state) => state?.wallet.address);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
   const [fromToken, setFromToken] = useState("POX");
   const [toToken, setToToken] = useState("USDX");
-  const [slippage, setSlippage] = useState("");
-  const [deadLine, setDeadLine] = useState("");
+  const [slippage, setSlippage] = useState("0.05");
+  const [deadLine, setDeadLine] = useState("5");
   const [swapArrowState, setSwapArrowState] = useState(true);
   const [debouncedAmount, setDebouncedAmount] = useState(fromAmount);
   const [bothTokenSelected, setBothTokenSelected] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
-  let usdxBalanceFromStore = useSelector((state) => state?.wallet?.UsdxBalance);
   let poxBalanceFromStore = useSelector((state) => state?.wallet?.poxBalance);
-  const [poxBalance, setPoxBalance] = useState(0);
-  const [usdxBalance, setUsdxBalance] = useState(0);
-  const settingsRef = useRef(null);
+  let usdxBalanceFromStore = useSelector((state) => state?.wallet?.UsdxBalance);
 
+  const [poxBalanceSwap, setPoxBalanceSwap] = useState(poxBalanceFromStore);
+  const [usdxBalanceSwap, setUsdxBalanceSwap] = useState(usdxBalanceFromStore);
   
   useEffect(()=>{
-    setPoxBalance(Number(poxBalanceFromStore));
-    setUsdxBalance(Number(usdxBalanceFromStore));
-  },[usdxBalance, poxBalance])
+    setPoxBalanceSwap(Number(poxBalanceFromStore));
+    setUsdxBalanceSwap(Number(usdxBalanceFromStore));
+  },[poxBalanceFromStore, usdxBalanceFromStore])
+
 
   // Handle input change with debounce
   const handleFromAmountChange = (e) => {
@@ -56,7 +63,7 @@ const SwapForm = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (settingsRef.current && !settingsRef.current.contains(event.target)) {
-        setShowSetting(!showSetting);
+        setShowSetting(false);
       }
     };
 
@@ -74,15 +81,19 @@ const SwapForm = () => {
     // Cleanup timeout if the component unmounts or fromAmount changes
     return () => clearTimeout(debounceTimer);
   }, [fromAmount]);
-
+  console.log(fromAmount);
+  
   useEffect(() => {
     const fetchSwapAmount = async () => {
+      if(fromToken==="USDX" && fromAmount>30000){
+       return alert("Limit exceeded")
+      }
+
       if (fromToken === "USDX") {
         const amount = to18Decimal(debouncedAmount).toLocaleString("fullwide", {
           useGrouping: false,
         });
         const data = await getSwapAmount(amount, fromToken, toToken);
-        console.log("data", data);
         setToAmount(
           Number(
             without6Decimal(data).toLocaleString("fullwide", {
@@ -95,7 +106,6 @@ const SwapForm = () => {
           useGrouping: false,
         });
         const data = await getSwapAmount(amount, fromToken, toToken);
-        console.log("data", data);
         setToAmount(
           Number(without18Decimal(data)).toLocaleString("fullwide", {
             useGrouping: false,
@@ -109,6 +119,10 @@ const SwapForm = () => {
   }, [debouncedAmount]);
 
   const handleSwap = async () => {
+    if(walletAddress){
+      return alert("Please ! connect your wallet");
+    }
+
     const allowance = await getAllowance(walletAddress);
     const transaction = await getApproval(walletAddress, fromAmount);
 
@@ -146,11 +160,29 @@ const SwapForm = () => {
       await window.pox.broadcast(JSON.parse(signedTransaction[1]))
     );
 
+     // Connect polink wallet
+  // async function getPolinkweb() {
+    var obj = setInterval(async () => {
+      if (window.pox) {
+        clearInterval(obj);
+        const detailsData = JSON.stringify(await window.pox.getDetails());
+        const parsedDetailsObject = JSON.parse(detailsData);
+        dispatch(
+          setPoxBalance(parsedDetailsObject[1]?.data?.Balance / Math.pow(10, 6))
+        );
+        dispatch(setUsdxBalance(parsedDetailsObject[1]?.data?.USDX));
+      }
+    }, 1000);
+  // }
+
     if (data?.data) {
       alert("Swap successfully!");
     } else {
       alert("Something went wrong!");
     }
+
+    setFromAmount(0);
+    setToAmount(0);
   };
 
   useEffect(() => {
@@ -180,6 +212,8 @@ const SwapForm = () => {
     setToAmount(0);
     setFromToken(toToken);
     setToToken(fromToken);
+    setPoxBalance(usdxBalance)
+    setUsdxBalance(poxBalance)
   };
 
   const handleFromTokenSelect = (token) => {
@@ -228,7 +262,7 @@ const SwapForm = () => {
                 Sell
               </label>
               <p className="text-white font-semibold">
-                Balance:{Number(poxBalance).toFixed(6)}
+                Balance:{Number(poxBalanceSwap).toFixed(6)}
               </p>
             </div>
             <div className="flex justify-between items-center mb-2">
@@ -237,7 +271,7 @@ const SwapForm = () => {
                 className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl w-full"
                 placeholder="0"
                 onChange={handleFromAmountChange}
-                value={fromAmount}
+                value={fromAmount>0?fromAmount:""}
               />
               <div className="bg-[#181717] px-4 py-2 rounded-2xl border-[1px] border-[#333333] shadow-inner">
                 <DropdownButton
@@ -277,7 +311,7 @@ const SwapForm = () => {
                 Buy
               </label>
               <p className="text-white font-semibold">
-                Balance: {Number(usdxBalance).toFixed(6)}
+                Balance: {Number(usdxBalanceSwap).toFixed(6)}
               </p>
             </div>
             <div className="flex justify-between items-center">
@@ -285,7 +319,7 @@ const SwapForm = () => {
                 type="number"
                 className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl w-full"
                 placeholder="0"
-                value={toAmount}
+                value={toAmount>0 ? toAmount :""}
               />
               <div className="bg-[#181717] px-3 py-2 rounded-2xl border-[1px] border-[#333333]  shadow-inner">
                 <DropdownButton

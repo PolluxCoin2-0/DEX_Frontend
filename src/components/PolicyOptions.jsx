@@ -6,7 +6,7 @@ const PolicyOptions = () => {
         <li className="cursor-pointer">Developer Documentation</li>
         <li className="pt-2 sm:pt-0 sm:pl-4 cursor-pointer">Terms of Service</li>
         <li className="pt-2 sm:pt-0 sm:pl-4 cursor-pointer">Privacy Policy</li>
-        <li className="pt-2 sm:pt-0 sm:pl-4 cursor-pointer">Whistleblower</li>
+        {/* <li className="pt-2 sm:pt-0 sm:pl-4 cursor-pointer">Whistleblower</li> */}
       </ul>
     </div>
   );
