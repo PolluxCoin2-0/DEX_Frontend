@@ -4,17 +4,6 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const POX_TOKEN_ADDRESS = import.meta.env.VITE_POX_TOKEN_ADDRESS;
 const USDX_TOKEN_ADDRESS = import.meta.env.VITE_USDX_TOKEN_ADDRESS;
 
-export const getCalledBeforeSwap = async(walletAddress)=>{
-    try {
-        const response = axios.get(BASE_URL+"getWallet",{
-            privateKey:walletAddress
-        })
-        console.log(response?.data)
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 export const getSwap = async (walletAddress, fromAmount, fromToken, toToken, slippage, deadLine) => {
     let from_Token;
     let to_Token;
@@ -30,14 +19,15 @@ export const getSwap = async (walletAddress, fromAmount, fromToken, toToken, sli
     } else if (toToken === "USDX") {
         to_Token = USDX_TOKEN_ADDRESS;
     }
+
   try {
-    const response = await axios.post(BASE_URL + "/swap", {
-      walletAddress: walletAddress,
+    const response = await axios.post(BASE_URL + "/swapPox", {
+      "walletAddress": walletAddress,   
       amountIn:fromAmount,
       slippage:parseInt(slippage),
       deadline:parseInt(deadLine),
-      token0:from_Token,
-      token1:to_Token,
+      "token0":from_Token,
+      "token1":to_Token,
     });
     return response?.data;
   } catch (error) {
@@ -72,7 +62,7 @@ export const getSwapAmount = async(amountIn,fromToken, toToken)=>{
     }
 }
 
-export const getAddLiquidity = async (walletAddress, fromAmount, toAmount, fromToken, toToken, deadLine) => {
+export const getAddLiquidity = async (walletAddress, fromAmount, toAmount, fromToken, toToken, deadLine,slippage) => {
     let from_Token;
     let to_Token;
 
@@ -95,13 +85,13 @@ export const getAddLiquidity = async (walletAddress, fromAmount, toAmount, fromT
     }
 
     try {
-        const response = await axios.post(`${BASE_URL}/addLiquidity`, {
-            amountA: fromAmount,
-            amountB: toAmount,
-            walletAddress: walletAddress,
-            fromToken: from_Token,
-            toToken: to_Token,
-            deadLine
+        const response = await axios.post(`${BASE_URL}/addLiquidityPox`, {
+            "amountETH": fromAmount,
+            "amountTokenDesired": toAmount,
+            "walletAddress": walletAddress,
+            "tokenAaddress": "371dedecf8526cfbc8cd6b993f99ac2a0980b3b214",  // USDX_TOKEN_ADDRESS
+            "deadline":parseInt(deadLine),
+            "slippage":parseInt(slippage)
         });
             return response.data;
     } catch (error) {
@@ -126,3 +116,50 @@ export const getPairLength = async()=>{
         console.log(error);
     }
 }
+
+export const getAllowance=async(walletAddress)=>{
+    try {
+        const response = await axios.post(BASE_URL+"/allowanceUsdx",{
+             "ownerAddress":walletAddress
+        })
+        return response?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getApproval=async(walletAddress,amount)=>{
+    try {
+        const response = await axios.post(BASE_URL+"/ApproveUsdx",{
+             "walletAddress":walletAddress,
+             "amount":amount
+        })
+        return response?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getAllowanceWPOX=async(walletAddress)=>{
+    try {
+        const response = await axios.post(BASE_URL+"/AllowanceWPOX",{
+             "walletAddress":walletAddress
+        })
+        return response?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getApproveWPOX=async(walletAddress,amount)=>{
+    try {
+        const response = await axios.post(BASE_URL+"/ApproveWPOX",{
+             "walletAddressAddress":walletAddress,
+             "amount":amount
+        })
+        return response?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
