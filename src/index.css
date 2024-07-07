@@ -144,4 +144,7 @@
   z-index: 1; /* Place it behind the content */
   pointer-events: none; /* Ensure it doesn’t interfere with interactions */
 }
+.custom-toast {
+  top: 4rem;
+}
 

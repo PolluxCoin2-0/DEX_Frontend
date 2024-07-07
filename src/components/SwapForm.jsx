@@ -12,16 +12,14 @@ import SlippageDropDown from "./SlippageDropDown";
 import DeadLineDropDown from "./DeadLineDropDown";
 import { RiSettings5Fill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
-import {
-  setPoxBalance,
-  setUsdxBalance,
-} from "../redux/walletSlice";
+import { setPoxBalance, setUsdxBalance } from "../redux/walletSlice";
 import {
   to18Decimal,
   to6Decimal,
   without18Decimal,
   without6Decimal,
 } from "../utils/converter";
+import { toast } from 'react-toastify';
 
 const SwapForm = () => {
   const dispatch = useDispatch();
@@ -37,17 +35,18 @@ const SwapForm = () => {
   const [debouncedAmount, setDebouncedAmount] = useState(fromAmount);
   const [bothTokenSelected, setBothTokenSelected] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   let poxBalanceFromStore = useSelector((state) => state?.wallet?.poxBalance);
   let usdxBalanceFromStore = useSelector((state) => state?.wallet?.UsdxBalance);
 
   const [poxBalanceSwap, setPoxBalanceSwap] = useState(poxBalanceFromStore);
   const [usdxBalanceSwap, setUsdxBalanceSwap] = useState(usdxBalanceFromStore);
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     setPoxBalanceSwap(Number(poxBalanceFromStore));
     setUsdxBalanceSwap(Number(usdxBalanceFromStore));
-  },[poxBalanceFromStore, usdxBalanceFromStore])
-
+  }, [poxBalanceFromStore, usdxBalanceFromStore]);
 
   // Handle input change with debounce
   const handleFromAmountChange = (e) => {
@@ -67,26 +66,26 @@ const SwapForm = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [settingsRef]);
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       setDebouncedAmount(fromAmount);
-    }, 100);
+    }, 0);
 
     // Cleanup timeout if the component unmounts or fromAmount changes
     return () => clearTimeout(debounceTimer);
   }, [fromAmount]);
-  console.log(fromAmount);
-  
+
   useEffect(() => {
     const fetchSwapAmount = async () => {
-      if(fromToken==="USDX" && fromAmount>30000){
-       return alert("Limit exceeded")
+      if (fromToken === "USDX" && fromAmount > 2000) {
+       toast.error("Limit exceeded");
+       return;
       }
 
       if (fromToken === "USDX") {
@@ -119,9 +118,17 @@ const SwapForm = () => {
   }, [debouncedAmount]);
 
   const handleSwap = async () => {
-    if(walletAddress){
-      return alert("Please ! connect your wallet");
+    const isValidInput =
+      fromAmount &&
+      fromToken !== "Select a token" &&
+      toToken !== "Select a token";
+    if (!isValidInput) {
+      toast.error("Enter both input value.");
+      return;
     }
+
+    if (loading) return; // Ignore click if already loading
+    setLoading(true); // Set loading state
 
     const allowance = await getAllowance(walletAddress);
     const transaction = await getApproval(walletAddress, fromAmount);
@@ -133,15 +140,6 @@ const SwapForm = () => {
     const result1 = JSON.stringify(
       await window.pox.broadcast(JSON.parse(signedTransaction1[1]))
     );
-
-    const isValidInput =
-      fromAmount &&
-      fromToken !== "Select a token" &&
-      toToken !== "Select a token";
-    if (!isValidInput) {
-      alert("Enter both input value and select both tokens.");
-      return;
-    }
 
     const data = await getSwap(
       walletAddress,
@@ -160,8 +158,7 @@ const SwapForm = () => {
       await window.pox.broadcast(JSON.parse(signedTransaction[1]))
     );
 
-     // Connect polink wallet
-  // async function getPolinkweb() {
+    // Connect polink wallet
     var obj = setInterval(async () => {
       if (window.pox) {
         clearInterval(obj);
@@ -173,16 +170,16 @@ const SwapForm = () => {
         dispatch(setUsdxBalance(parsedDetailsObject[1]?.data?.USDX));
       }
     }, 1000);
-  // }
 
     if (data?.data) {
-      alert("Swap successfully!");
+      toast.success("Swap successfully!");
     } else {
-      alert("Something went wrong!");
+      toast.error("Something went wrong!");
     }
 
     setFromAmount(0);
     setToAmount(0);
+    setLoading(false); // Reset loading state
   };
 
   useEffect(() => {
@@ -202,7 +199,7 @@ const SwapForm = () => {
 
   const handleReverseToken = async () => {
     if (fromToken === "Select a token" || toToken === "Select a token") {
-      alert("Please select both tokens before swapping.");
+      toast.error("Please select both tokens before swapping.");
       return;
     }
 
@@ -212,13 +209,13 @@ const SwapForm = () => {
     setToAmount(0);
     setFromToken(toToken);
     setToToken(fromToken);
-    setPoxBalance(usdxBalance)
-    setUsdxBalance(poxBalance)
+    dispatch(setPoxBalance(usdxBalanceFromStore));
+    dispatch(setUsdxBalance(poxBalanceFromStore));
   };
 
   const handleFromTokenSelect = (token) => {
     if (token === toToken) {
-      alert("You cannot select the same token for both fields.");
+      toast.error("You cannot select the same token for both fields.");
     } else {
       setFromToken(token);
     }
@@ -226,7 +223,7 @@ const SwapForm = () => {
 
   const handleToTokenSelect = (token) => {
     if (token === fromToken) {
-      alert("You cannot select the same token for both fields.");
+      toast.error("You cannot select the same token for both fields.");
     } else {
       setToToken(token);
     }
@@ -247,7 +244,10 @@ const SwapForm = () => {
       <div className="relative">
         {showSetting && (
           <div className="mb-4 absolute w-full flex justify-end z-30 ">
-            <div  ref={settingsRef} className="bg-[#1B1B1B] px-6 pb-6 flex flex-col items-end rounded-2xl border-2 border-[#333333]">
+            <div
+              ref={settingsRef}
+              className="bg-[#1B1B1B] px-6 pb-6 flex flex-col items-end rounded-2xl border-2 border-[#333333]"
+            >
               <SlippageDropDown slippage={slippage} setSlippage={setSlippage} />
 
               <DeadLineDropDown deadLine={deadLine} setDeadLine={setDeadLine} />
@@ -271,7 +271,7 @@ const SwapForm = () => {
                 className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl w-full"
                 placeholder="0"
                 onChange={handleFromAmountChange}
-                value={fromAmount>0?fromAmount:""}
+                value={fromAmount > 0 ? fromAmount : ""}
               />
               <div className="bg-[#181717] px-4 py-2 rounded-2xl border-[1px] border-[#333333] shadow-inner">
                 <DropdownButton
@@ -319,7 +319,7 @@ const SwapForm = () => {
                 type="number"
                 className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl w-full"
                 placeholder="0"
-                value={toAmount>0 ? toAmount :""}
+                value={toAmount > 0 ? toAmount : ""}
               />
               <div className="bg-[#181717] px-3 py-2 rounded-2xl border-[1px] border-[#333333]  shadow-inner">
                 <DropdownButton
@@ -332,12 +332,31 @@ const SwapForm = () => {
           </div>
         </div>
         <div className="text-center">
-          <button
-            onClick={handleSwap}
-            className="font-bold w-full mt-6 rounded-2xl bg-[#F3BB1B] px-4 py-4 cursor-pointer text-xl"
-          >
-            {walletAddress ? "Swap" : "Connect To Wallet"}
-          </button>
+          {loading ? (
+            <button
+              disabled
+              type="button"
+              className="flex justify-center items-center space-x-4 font-bold w-full mt-6 rounded-2xl bg-[#F3BB1B] text-black cursor-pointer px-4 py-4 text-xl relative"
+            >
+              <span className="ml-2 -mt-1">Swapping</span>
+              <div className="flex justify-center items-center space-x-2">
+                <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0"></div>
+                <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0.10s"></div>
+                <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0.2s"></div>
+              </div>
+            </button>
+          ) : (
+            <button
+              onClick={handleSwap}
+              className={`font-bold w-full mt-6 rounded-2xl ${
+                !walletAddress
+                  ? "bg-[#1B1B1B] text-[#8a8a8a] cursor-not-allowed"
+                  : "bg-[#F3BB1B] text-black cursor-pointer"
+              } px-4 py-4  text-xl`}
+            >
+              Swap
+            </button>
+          )}
         </div>
       </div>
     </div>
