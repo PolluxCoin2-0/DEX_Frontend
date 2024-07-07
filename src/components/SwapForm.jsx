@@ -367,7 +367,7 @@ const SwapForm = () => {
           ) : (
             <button
               onClick={handleSwap}
-              className={`font-bold w-full mt-6 rounded-2xl ${
+              className={`font-bold w-full mt-2 rounded-2xl ${
                 !walletAddress
                   ? "bg-[#1B1B1B] text-[#8a8a8a] cursor-not-allowed"
                   : "bg-[#F3BB1B] text-black cursor-pointer"
