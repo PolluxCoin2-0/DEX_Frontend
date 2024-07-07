@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 const SuccessModal = () => {
   const navigate = useNavigate();
   const handleModalToggle = () => {
-    navigate("/");
+    // navigate("/");
   };
 
   return (

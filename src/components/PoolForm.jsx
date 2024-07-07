@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import DropdownButton from "../components/DropDownButton";
 import PoolTable from "./PoolTable";
-import { getAddLiquidity } from "../utils/Axios";
+import {
+  getAddLiquidity,
+  getAllowance,
+  getAllowanceWPOX,
+  getApproval,
+  getApproveWPOX,
+} from "../utils/Axios";
 import SuccessModal from "./SuccessModal";
 import { useSelector } from "react-redux";
 import DeadLineDropDown from "./DeadLineDropDown";
 import { TbArrowsDownUp, TbArrowsUpDown } from "react-icons/tb";
 import { RiSettings5Fill } from "react-icons/ri";
+import SlippageDropDown from "./SlippageDropDown";
 
 const PoolForm = () => {
   const [fromAmount, setFromAmount] = useState(0);
@@ -17,11 +24,48 @@ const PoolForm = () => {
   const [isShowModal, setIsShowModal] = useState(false);
   const walletAddress = useSelector((state) => state?.wallet);
   const [deadLine, setDeadLine] = useState("");
+  const [slippage, setSlippage] = useState("");
   const [swapArrowState, setSwapArrowState] = useState(true);
   const [bothTokenSelected, setBothTokenSelected] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
 
   const handleGetAddLiquidity = async () => {
+    // allowance APi
+    const allowance = await getAllowance(walletAddress?.address);
+    const allowanceWPox = await getAllowanceWPOX(walletAddress?.address);
+    console.log("allowanceWPOx", allowanceWPox);
+
+    if (allowanceWPox?.data < fromAmount) {
+      const approvedWPox = await getApproveWPOX(
+        walletAddress?.address,
+        fromAmount
+      );
+      console.log("approvedWPOX", approvedWPox?.data?.transaction);
+
+      const signedTransaction = await window.pox.signdata(
+        approvedWPox?.data?.transaction
+      );
+
+      console.log("signedTransaction", signedTransaction);
+
+      const result = JSON.stringify(
+        await window.pox.broadcast(JSON.parse(signedTransaction[1]))
+      );
+      console.log("result", result);
+    }
+
+    if (allowance?.data < toAmount) {
+      const transaction = await getApproval(walletAddress?.address, toAmount);
+
+      const signedTransaction = await window.pox.signdata(
+        transaction?.data?.transaction
+      );
+
+      const result = JSON.stringify(
+        await window.pox.broadcast(JSON.parse(signedTransaction[1]))
+      );
+    }
+
     const isValidInput =
       fromAmount &&
       toAmount &&
@@ -31,12 +75,13 @@ const PoolForm = () => {
       return;
     }
 
-    console.log(walletAddress?.address,
-      fromAmount,
-      toAmount,
-      fromToken,
-      toToken,
-      deadLine)
+    // console.log(walletAddress?.address,
+    //   fromAmount,
+    //   toAmount,
+    //   fromToken,
+    //   toToken,
+    //   deadLine,
+    // slippage)
 
     try {
       const data = await getAddLiquidity(
@@ -45,13 +90,26 @@ const PoolForm = () => {
         toAmount,
         fromToken,
         toToken,
-        deadLine
+        deadLine,
+        slippage
       );
 
-      if (data?.statusCode === 200) {
-        setIsShowModal(true);
-        return;
-      }
+      console.log("data", data);
+
+      const signedTransaction = await window.pox.signdata(
+        data?.data?.transaction
+      );
+
+      const result = JSON.stringify(
+        await window.pox.broadcast(JSON.parse(signedTransaction[1]))
+      );
+
+      console.log("result", result);
+
+      // if (data?.statusCode === 200) {
+      //   setIsShowModal(true);
+      //   return;
+      // }
     } catch (error) {
       console.error("Error adding liquidity:", error);
     }
@@ -132,6 +190,7 @@ const PoolForm = () => {
         {showSetting && (
           <div className="mb-4 absolute w-full flex justify-end z-30">
             <div className="bg-[#1B1B1B] px-6 pb-6 flex flex-col items-end rounded-2xl border-2 border-[#333333]">
+              <SlippageDropDown slippage={slippage} setSlippage={setSlippage} />
               <DeadLineDropDown deadLine={deadLine} setDeadLine={setDeadLine} />
             </div>
           </div>

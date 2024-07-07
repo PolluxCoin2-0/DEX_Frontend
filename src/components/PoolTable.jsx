@@ -25,7 +25,7 @@ const PoolTable = () => {
             <p className="font-bold">POX/USDX</p>
         </div>
         <div>
-            <p className="font-bold">USwebpPOX</p>
+            <p className="font-bold">USDX/POX</p>
         </div>
         <div>
             <p className="font-bold">Share of Pool</p>

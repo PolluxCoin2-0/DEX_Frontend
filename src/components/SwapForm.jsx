@@ -345,7 +345,7 @@ const SwapForm = () => {
             </div>
             <div className="flex justify-between items-center mb-2">
               <p className="flex items-center"><VscQuestion /> <span className="ml-2">Price Impact</span></p>
-              <p>-0.02%</p>
+              <p>-0.03%</p> 
             </div>
             <div className="flex justify-between items-center">
               <p className="flex items-center"><VscQuestion /><span className="ml-2"> Transaction Fees</span></p>

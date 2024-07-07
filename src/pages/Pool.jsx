@@ -12,12 +12,12 @@ const Pool = () => {
 
   return (
     <div className="flex pt-20 md:pt-12 lg:pt-12 min-h-screen flex-col items-center px-4">
-      <div className="text-center">
+      {/* <div className="text-center">
         <p className="text-2xl pb-1 text-white font-bold">Total Value Locked</p>
         <p className="text-5xl text-[#F3BB1B] font-bold flex items-center justify-center ">
           $ <AnimatedNumber value={totalValueLocked} />
         </p>
-      </div>
+      </div> */}
       <div className="pt-6 pb-2 w-full md:w-1/3 md:pt-12">
           {!showPoolForm ? (
             <div className="glassmorph-container">
