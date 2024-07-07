@@ -51,6 +51,10 @@ const SwapForm = () => {
 
   // Handle input change with debounce
   const handleFromAmountChange = (e) => {
+    if(!walletAddress){
+      toast.error("Please connect your wallet");
+      return;
+    }
     const newAmount = e.target.value;
     setFromAmount(newAmount);
 
