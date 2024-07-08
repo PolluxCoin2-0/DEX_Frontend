@@ -26,6 +26,7 @@ const PoolForm = () => {
   const [swapArrowState, setSwapArrowState] = useState(true);
   const [bothTokenSelected, setBothTokenSelected] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
+  const [loading, setLoading] = useState(false);
   const settingsRef = useRef(null);
 
   useEffect(() => {
@@ -49,6 +50,9 @@ const PoolForm = () => {
       toast.error("Enter both token value !");
       return;
     }
+
+    if (loading) return; // Ignore click if already loading
+    setLoading(true); // Set loading state
 
     // allowance APi
     const allowance = await getAllowance(walletAddress?.address);
@@ -121,6 +125,10 @@ const PoolForm = () => {
         toast.success("Liquidity added successfully.");
         return;
       }
+
+      setFromAmount(0);
+      setToAmount(0);
+      setLoading(false); // Reset loading state
     } catch (error) {
       toast.error("Error in adding liquidity !");
     }
@@ -272,7 +280,21 @@ const PoolForm = () => {
         </div>
       </div>
       <PoolTable />
-      <button
+      {loading?(
+         <button
+         disabled
+         type="button"
+         className="flex justify-center items-center space-x-4 font-bold w-full mt-6 rounded-2xl bg-[#F3BB1B] text-black cursor-pointer px-4 py-4 text-xl relative"
+       >
+         <span className="ml-2 -mt-1">Adding Liquidity</span>
+         <div className="flex justify-center items-center space-x-2">
+           <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0"></div>
+           <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0.10s"></div>
+           <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0.2s"></div>
+         </div>
+       </button>
+      ):(
+        <button
         // onClick={() => setShowPoolTable(!showPoolTable)}
         onClick={handleGetAddLiquidity}
         className={`font-bold w-full mt-12 rounded-xl ${
@@ -282,6 +304,8 @@ const PoolForm = () => {
         } px-4 py-4  text-xl`}>
         {walletAddress?.address ? "Add Liquidity" : "Connect To Wallet"}
       </button>
+    )}
+      
     </div>
   );
 };
