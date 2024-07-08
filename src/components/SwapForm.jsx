@@ -343,13 +343,13 @@ const SwapForm = () => {
               <p className="flex items-center"><VscQuestion /><span className="ml-2"> Minimum Received</span></p>
               <p className="text-white">{toAmount} {toToken}</p>
             </div>
-            <div className="flex justify-between items-center mb-2">
+            {/* <div className="flex justify-between items-center mb-2">
               <p className="flex items-center"><VscQuestion /> <span className="ml-2">Price Impact</span></p>
               <p>-0.03%</p> 
-            </div>
-            <div className="flex justify-between items-center">
+            </div> */}
+            <div className="flex justify-between items-center"> 
               <p className="flex items-center"><VscQuestion /><span className="ml-2"> Transaction Fees</span></p>
-              <p>3 POX</p>
+              <p>{fromAmount*0.003} POX</p>
             </div>
           </div>
           )
