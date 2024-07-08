@@ -51,8 +51,8 @@ const PoolForm = () => {
       return;
     }
 
-    if (loading) return; // Ignore click if already loading
     setLoading(true); // Set loading state
+    if (loading) return; // Ignore click if already loading
 
     // allowance APi
     const allowance = await getAllowance(walletAddress?.address);

@@ -132,8 +132,8 @@ const SwapForm = () => {
       return;
     }
 
-    if (loading) return; // Ignore click if already loading
     setLoading(true); // Set loading state
+    if (loading) return; // Ignore click if already loading
 
     const allowance = await getAllowance(walletAddress);
     const transaction = await getApproval(walletAddress, fromAmount);
