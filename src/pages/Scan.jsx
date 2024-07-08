@@ -48,10 +48,6 @@ const Scan = () => {
     fetchdata();
   },[])
 
-  console.log("data",data);
-  console.log("pairlength",pairLength);
-
-
   return (
     <div className="px-4 sm:px-8 md:px-12 py-6">
       <Search />
