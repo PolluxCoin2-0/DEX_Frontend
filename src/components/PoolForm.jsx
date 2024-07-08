@@ -172,11 +172,19 @@ const PoolForm = () => {
   };
 
   const handleFromAmountChange = (e) => {
+    if (!walletAddress?.address) {
+      toast.error("Please connect your wallet");
+      return;
+    }
     const newAmount = e.target.value;
     setFromAmount(newAmount);
   };
 
   const handleToAmountChange = (e) => {
+    if (!walletAddress?.address) {
+      toast.error("Please connect your wallet");
+      return;
+    }
     const newAmount = e.target.value;
     setToAmount(newAmount);
   };
