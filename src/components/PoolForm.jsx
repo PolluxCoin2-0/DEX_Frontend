@@ -55,25 +55,20 @@ const PoolForm = () => {
     // allowance APi
     const allowance = await getAllowance(walletAddress?.address);
     const allowanceWPox = await getAllowanceWPOX(walletAddress?.address);
-    console.log("allowanceWPOx", allowanceWPox);
 
     if (allowanceWPox?.data < fromAmount) {
       const approvedWPox = await getApproveWPOX(
         walletAddress?.address,
         fromAmount
       );
-      console.log("approvedWPOX", approvedWPox?.data?.transaction);
 
       const signedTransaction = await window.pox.signdata(
         approvedWPox?.data?.transaction
       );
 
-      console.log("signedTransaction", signedTransaction);
-
       const result = JSON.stringify(
         await window.pox.broadcast(JSON.parse(signedTransaction[1]))
       );
-      console.log("result", result);
     }
 
     if (allowance?.data < toAmount) {
@@ -88,14 +83,6 @@ const PoolForm = () => {
       );
     }
 
-    // console.log(walletAddress?.address,
-    //   fromAmount,
-    //   toAmount,
-    //   fromToken,
-    //   toToken,
-    //   deadLine,
-    // slippage)
-
     try {
       const data = await getAddLiquidity(
         walletAddress?.address,
@@ -107,8 +94,6 @@ const PoolForm = () => {
         slippage
       );
 
-      console.log("data", data);
-
       const signedTransaction = await window.pox.signdata(
         data?.data?.transaction
       );
@@ -116,8 +101,6 @@ const PoolForm = () => {
       const result = JSON.stringify(
         await window.pox.broadcast(JSON.parse(signedTransaction[1]))
       );
-
-      console.log("result", result);
 
       if (data?.statusCode === 200) {
         toast.success("Liquidity added successfully.");
