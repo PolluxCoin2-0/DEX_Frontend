@@ -13,7 +13,7 @@ import DeadLineDropDown from "./DeadLineDropDown";
 import { TbArrowsDownUp, TbArrowsUpDown } from "react-icons/tb";
 import { RiSettings5Fill } from "react-icons/ri";
 import SlippageDropDown from "./SlippageDropDown";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const PoolForm = () => {
   const walletAddress = useSelector((state) => state?.wallet);
@@ -43,9 +43,7 @@ const PoolForm = () => {
   }, [settingsRef]);
 
   const handleGetAddLiquidity = async () => {
-    const isValidInput =
-      fromAmount &&
-      toAmount 
+    const isValidInput = fromAmount && toAmount;
     if (!isValidInput) {
       toast.error("Enter both token value !");
       return;
@@ -198,7 +196,10 @@ const PoolForm = () => {
       <div className="relative">
         {showSetting && (
           <div className="mb-4 absolute w-full flex justify-end z-30">
-            <div ref={settingsRef} className="bg-[#1B1B1B] px-6 pb-6 flex flex-col items-end rounded-2xl border-2 border-[#333333]">
+            <div
+              ref={settingsRef}
+              className="bg-[#1B1B1B] px-6 pb-6 flex flex-col items-end rounded-2xl border-2 border-[#333333]"
+            >
               <SlippageDropDown slippage={slippage} setSlippage={setSlippage} />
               <DeadLineDropDown deadLine={deadLine} setDeadLine={setDeadLine} />
             </div>
@@ -218,7 +219,7 @@ const PoolForm = () => {
                 className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl w-full"
                 placeholder="0"
                 onChange={handleFromAmountChange}
-                value={fromAmount>0?fromAmount:""}
+                value={fromAmount > 0 ? fromAmount : ""}
                 disabled={!bothTokenSelected}
               />
               <div className="bg-[#181717] px-4 py-2 rounded-2xl border-[1px] border-[#333333] shadow-inner whitespace-nowrap">
@@ -264,7 +265,7 @@ const PoolForm = () => {
                 type="number"
                 className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl w-full"
                 placeholder="0"
-                value={toAmount>0?toAmount:""}
+                value={toAmount > 0 ? toAmount : ""}
                 onChange={handleToAmountChange}
                 disabled={!bothTokenSelected}
               />
@@ -280,32 +281,32 @@ const PoolForm = () => {
         </div>
       </div>
       <PoolTable />
-      {loading?(
-         <button
-         disabled
-         type="button"
-         className="flex justify-center items-center space-x-4 font-bold w-full mt-6 rounded-2xl bg-[#F3BB1B] text-black cursor-pointer px-4 py-4 text-xl relative"
-       >
-         <span className="ml-2 -mt-1">Adding Liquidity</span>
-         <div className="flex justify-center items-center space-x-2">
-           <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0"></div>
-           <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0.10s"></div>
-           <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0.2s"></div>
-         </div>
-       </button>
-      ):(
+      {loading ? (
         <button
-        // onClick={() => setShowPoolTable(!showPoolTable)}
-        onClick={handleGetAddLiquidity}
-        className={`font-bold w-full mt-12 rounded-xl ${
-          !walletAddress?.address
-            ? "bg-[#1B1B1B] text-[#8a8a8a] cursor-not-allowed"
-            : "bg-[#F3BB1B] text-black cursor-pointer"
-        } px-4 py-4  text-xl`}>
-        {walletAddress?.address ? "Add Liquidity" : "Connect To Wallet"}
-      </button>
-    )}
-      
+          disabled
+          type="button"
+          className="flex justify-center items-center space-x-4 font-bold w-full mt-6 rounded-2xl bg-[#F3BB1B] text-black cursor-pointer px-4 py-4 text-xl relative"
+        >
+          <span className="ml-2 -mt-1">Adding Liquidity</span>
+          <div className="flex justify-center items-center space-x-2">
+            <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0"></div>
+            <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0.10s"></div>
+            <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0.2s"></div>
+          </div>
+        </button>
+      ) : (
+        <button
+          // onClick={() => setShowPoolTable(!showPoolTable)}
+          onClick={handleGetAddLiquidity}
+          className={`font-bold w-full mt-12 rounded-xl ${
+            !walletAddress?.address
+              ? "bg-[#1B1B1B] text-[#8a8a8a] cursor-not-allowed"
+              : "bg-[#F3BB1B] text-black cursor-pointer"
+          } px-4 py-4  text-xl`}
+        >
+          {walletAddress?.address ? "Add Liquidity" : "Connect To Wallet"}
+        </button>
+      )}
     </div>
   );
 };

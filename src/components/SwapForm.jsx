@@ -19,7 +19,7 @@ import {
   without18Decimal,
   without6Decimal,
 } from "../utils/converter";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { VscQuestion } from "react-icons/vsc";
 
 const SwapForm = () => {
@@ -51,7 +51,7 @@ const SwapForm = () => {
 
   // Handle input change with debounce
   const handleFromAmountChange = (e) => {
-    if(!walletAddress){
+    if (!walletAddress) {
       toast.error("Please connect your wallet");
       return;
     }
@@ -89,8 +89,8 @@ const SwapForm = () => {
   useEffect(() => {
     const fetchSwapAmount = async () => {
       if (fromToken === "USDX" && fromAmount > 2000) {
-       toast.error("Limit exceeded");
-       return;
+        toast.error("Limit exceeded");
+        return;
       }
 
       if (fromToken === "USDX") {
@@ -336,24 +336,30 @@ const SwapForm = () => {
             </div>
           </div>
         </div>
-        {
-          toAmount>0 && (
-            <div className="bg-[#1B1B1B] text-gray-300 rounded-xl my-4 p-6">
+        {toAmount > 0 && (
+          <div className="bg-[#1B1B1B] text-gray-300 rounded-xl my-4 p-6">
             <div className="flex justify-between items-center mb-2">
-              <p className="flex items-center"><VscQuestion /><span className="ml-2"> Minimum Received</span></p>
-              <p className="text-white">{toAmount} {toToken}</p>
+              <p className="flex items-center">
+                <VscQuestion />
+                <span className="ml-2"> Minimum Received</span>
+              </p>
+              <p className="text-white">
+                {toAmount} {toToken}
+              </p>
             </div>
             {/* <div className="flex justify-between items-center mb-2">
               <p className="flex items-center"><VscQuestion /> <span className="ml-2">Price Impact</span></p>
               <p>-0.03%</p> 
             </div> */}
-            <div className="flex justify-between items-center"> 
-              <p className="flex items-center"><VscQuestion /><span className="ml-2"> Transaction Fees</span></p>
-              <p>{fromAmount*0.003} POX</p>
+            <div className="flex justify-between items-center">
+              <p className="flex items-center">
+                <VscQuestion />
+                <span className="ml-2"> Transaction Fees</span>
+              </p>
+              <p>{fromAmount * 0.003} POX</p>
             </div>
           </div>
-          )
-        }
+        )}
         <div className="text-center">
           {loading ? (
             <button
