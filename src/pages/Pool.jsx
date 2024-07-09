@@ -69,7 +69,7 @@ const Pool = () => {
       <div className="mt-10 mb-5">
         <div className="shadow w-full bg-white mt-2 max-w-2xl mx-auto rounded-full">
           <div
-            className="rounded-full bg-indigo-600 text-xs leading-none text-center text-white py-1"
+            className="rounded-full bg-yellow-400 text-base leading-none text-center text-black font-bold py-1"
             style={{ width: '75%' }}
           >
             75%
