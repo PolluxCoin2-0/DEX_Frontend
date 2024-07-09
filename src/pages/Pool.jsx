@@ -30,8 +30,10 @@ const Pool = () => {
               </button>
               <div className="flex justify-between items-center w-full md:w-2/3 mt-2">
                 <p className="text-white font-medium">Your Liquidity</p>
-             <Link to="/pool/removeliquidity"><p className="font-light cursor-pointer text-yellow-400 underline">Remove Liquidity</p></Link>
-                {/* <BsQuestionCircle color="#F3BB1B" size={20} /> */}
+             {/* <Link to="/pool/removeliquidity">
+             <p className="font-light cursor-pointer text-yellow-400 underline">Remove Liquidity</p>
+             </Link> */}
+                <BsQuestionCircle color="#F3BB1B" size={20} />
               </div>
               <div className="flex justify-center items-center mt-10 space-x-4">
                 <button className="font-bold relative inline-flex items-center justify-center px-10 py-4 overflow-hidden

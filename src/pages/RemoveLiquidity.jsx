@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   getApprovePair,
   getBalanceOfPair,
@@ -58,8 +58,8 @@ const RemoveLiquidity = () => {
       let liquidity = Math.floor(
         (totalLiquidity * (1000 - percentageValue * 10)) / 1000
       );
-      console.log("liquidity", liquidity, "percentage", percentageValue);
       liquidity = await polluxWeb.toHex(liquidity);
+      console.log("liquidity", liquidity, "percentage", percentageValue);
 
       // ApprovePair
       const transaction = await getApprovePair(
@@ -67,23 +67,49 @@ const RemoveLiquidity = () => {
         liquidity
       );
 
-      // Sign Transaction
-      const signedTransaction = await window.pox.signdata(
-        transaction?.data?.transaction
-      );
+      console.log(transaction?.data);
 
-      // Broadcast Transaction
-      const result = JSON.stringify(
-        await window.pox.broadcast(JSON.parse(signedTransaction[1]))
-      );
+      if (!transaction?.data) {
+        // Sign Transaction
+        const signedTransaction = await window.pox.signdata(
+          transaction?.data?.transaction
+        );
+
+        console.log(signedTransaction);
+
+        // Broadcast Transaction
+        const result = JSON.stringify(
+          await window.pox.broadcast(JSON.parse(signedTransaction[1]))
+        );
+
+        console.log(result);
+      }
 
       // RemoveLiquidity API
-      await removeLiquidity(
+      const removeLiquidityData = await removeLiquidity(
         percentageValue,
         walletAddress?.address,
         deadlineValue
       );
-      toast.success("Liquidity removed successfully");
+
+      console.log(removeLiquidityData);
+
+      // Sign Transaction
+      const signedTransaction1 = await window.pox.signdata(
+        removeLiquidityData?.data?.transaction
+      );
+
+      console.log(signedTransaction1[1]);
+
+      // Broadcast Transaction
+      const result1 = JSON.stringify(
+        await window.pox.broadcast(JSON.parse(signedTransaction1[1]))
+      );
+
+      console.log(result1);
+
+      if (removeLiquidityData?.statusCode)
+        toast.success("Liquidity removed successfully");
     } catch (error) {
       console.error("API Error:", error);
       // Handle error (if needed, you can display an error message to the user)
