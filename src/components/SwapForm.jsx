@@ -251,8 +251,12 @@ const SwapForm = () => {
   return (
     <div className="w-full pt-6 ">
       <div className="flex justify-between items-center pb-4 text-white">
+      
+
+
         <p className="font-semibold text-lg pl-2">Swap</p>
-        <p>1 POX = {poxPrice>0?poxPrice:0} USDX</p>
+        
+        <p>POX Price <span className="text-green-500"></span> = $ {poxPrice>0?poxPrice:0}</p>
         <RiSettings5Fill
           color="white"
           size={24}
