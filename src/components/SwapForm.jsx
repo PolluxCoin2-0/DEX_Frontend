@@ -252,7 +252,7 @@ const SwapForm = () => {
     <div className="w-full pt-6 ">
       <div className="flex justify-between items-center pb-4 text-white">
         <p className="font-semibold text-lg pl-2">Swap</p>
-        <p>1 POX = {poxPrice} USDX</p>
+        <p>1 POX = {poxPrice>0?poxPrice:0} USDX</p>
         <RiSettings5Fill
           color="white"
           size={24}
@@ -351,7 +351,7 @@ const SwapForm = () => {
             </div>
           </div>
         </div>
-        {toAmount > 0 && (
+        {fromAmount > 0 && (
           <div className="bg-[#1B1B1B] text-gray-300 rounded-xl my-4 p-6">
             <div className="flex justify-between items-center mb-2">
               <p className="flex items-center">
@@ -359,7 +359,7 @@ const SwapForm = () => {
                 <span className="ml-2"> Minimum Received</span>
               </p>
               <p className="text-white">
-                {toAmount} {toToken}
+                {toAmount>0?toAmount:0} {toToken}
               </p>
             </div>
             {/* <div className="flex justify-between items-center mb-2">
@@ -369,9 +369,9 @@ const SwapForm = () => {
             <div className="flex justify-between items-center">
               <p className="flex items-center">
                 <VscQuestion />
-                <span className="ml-2"> Transaction Fees</span>
+                <span className="ml-2"> Platform Fees</span>
               </p>
-              <p>{fromAmount * 0.003} POX</p>
+              <p>{fromAmount * 0.005} POX</p>
             </div>
           </div>
         )}
