@@ -163,3 +163,41 @@ export const getApproveWPOX=async(walletAddress,amount)=>{
     }
 }
 
+export const removeLiquidity=async(percent, walletAddress, deadline)=>{
+    console.log(percent, walletAddress,deadline)
+    try {
+        const response = await axios.post (BASE_URL+"/removeLiquidityPox",{
+            "tokenAaddress": "37c412bd241e4599fa3c191d46b5e53dedb293f006", 
+            "percent":  percent,
+            "walletAddress": walletAddress,
+            "deadline": deadline
+        })
+        return response?.data;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const getBalanceOfPair=async(walletAddress)=>{
+    try {
+        const response = await axios.post(BASE_URL+"/balanceOfPair",{
+            "address": walletAddress,
+        });
+        return response?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getApprovePair=async(walletAddress, amount)=>{
+    try {
+        const response = await axios.post(BASE_URL+"/approvePair",{
+            "walletAddress": walletAddress,
+             "amount": amount
+        });
+        return response?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+

@@ -4,6 +4,7 @@ import DropdownButton from "../components/DropDownButton";
 import {
   getAllowance,
   getApproval,
+  getReserves,
   getSwap,
   getSwapAmount,
 } from "../utils/Axios";
@@ -37,6 +38,7 @@ const SwapForm = () => {
   const [bothTokenSelected, setBothTokenSelected] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [poxPrice, setPoxPrice] = useState(0);
 
   let poxBalanceFromStore = useSelector((state) => state?.wallet?.poxBalance);
   let usdxBalanceFromStore = useSelector((state) => state?.wallet?.UsdxBalance);
@@ -63,6 +65,18 @@ const SwapForm = () => {
       setToAmount(0);
     }
   };
+  useEffect(() => {
+    const fetchPoxPrice = async () => {
+      try {
+        const data = await getReserves();
+        setPoxPrice(Number(data?.data?.pricePOX).toFixed(6)); 
+      } catch (error) {
+        console.error('Error fetching POX price:', error);
+      }
+    };
+
+    fetchPoxPrice();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -238,6 +252,7 @@ const SwapForm = () => {
     <div className="w-full pt-6 ">
       <div className="flex justify-between items-center pb-4 text-white">
         <p className="font-semibold text-lg pl-2">Swap</p>
+        <p>1 POX = {poxPrice} USDX</p>
         <RiSettings5Fill
           color="white"
           size={24}
