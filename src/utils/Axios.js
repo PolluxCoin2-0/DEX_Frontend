@@ -62,6 +62,17 @@ export const getSwapAmount = async(amountIn,fromToken, toToken)=>{
     }
 }
 
+export const getQuateValue = async(fromAmount) =>{
+    try {
+        const response = await axios.post(BASE_URL+"/quate",{
+            "amountA": fromAmount
+        });
+        return response?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const getAddLiquidity = async (walletAddress, fromAmount, toAmount, fromToken, toToken, deadLine,slippage) => {
     let from_Token;
     let to_Token;
