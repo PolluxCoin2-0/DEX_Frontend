@@ -133,7 +133,7 @@ const Navbar = () => {
             <li className="pl-4 cursor-pointer">V1</li>
           </ul>
           <button
-            onClick={getPolinkweb}
+            // onClick={getPolinkweb}
             className="font-bold text-black rounded-md bg-[#F3BB1B] px-4 py-[7px] cursor-pointer"
           >
             {address && address && address.length > 0 ? (
