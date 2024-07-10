@@ -5,6 +5,7 @@ import PolicyOptions from "../components/PolicyOptions";
 import SwitchComp from "../components/SwitchComp";
 import { useEffect, useState } from "react";
 import { getPairLength, getReserves } from "../utils/Axios";
+import { formatNumberWithCommas } from "../utils/formatNumberWithCommas";
 
 const hotTokens =[
   "Name",
@@ -41,6 +42,7 @@ const Scan = () => {
     const fetchdata=async()=>{
       const data = await getReserves();
       const pairLength = await getPairLength();
+      console.log(data?.data?.reserve1)
       setPairLength(pairLength?.data)
       setData(data?.data);
     }
@@ -72,7 +74,7 @@ const Scan = () => {
         <div className="bg-white rounded-3xl px-2 md:px-6 lg:px-6 py-4 md:py-6 lg:py-6 w-full lg:w-1/2">
           <p className="pl-4 pb-3">Liquidity</p>
           <div className="flex items-center space-x-4">
-            <p className="text-lg font-medium pl-4">$161,187,730</p>
+            <p className="text-lg font-medium pl-4">$ {data?.reserve1 && formatNumberWithCommas(data?.reserve1)}</p>
             <p className="text-green-500">+0.52%</p>
           </div>
           <AreaChartComp />
