@@ -102,7 +102,7 @@ const SwapForm = () => {
 
   useEffect(() => {
     const fetchSwapAmount = async () => {
-      if (fromToken === "USDX" && fromAmount > 2000) {
+      if (fromAmount > 1000) {
         toast.error("Limit exceeded");
         return;
       }
