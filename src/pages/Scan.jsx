@@ -42,7 +42,6 @@ const Scan = () => {
     const fetchdata=async()=>{
       const data = await getReserves();
       const pairLength = await getPairLength();
-      console.log(data?.data?.reserve1)
       setPairLength(pairLength?.data)
       setData(data?.data);
     }
