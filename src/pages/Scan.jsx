@@ -44,7 +44,6 @@ const Scan = () => {
       setPairLength(pairLength?.data)
       setData(data?.data);
     }
-
     fetchdata();
   },[])
 
