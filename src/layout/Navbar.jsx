@@ -129,7 +129,7 @@ const Navbar = () => {
         <div className="hidden md:flex space-x-8 justify-center items-center">
           <ul className="flex justify-between space-x-6 divide-x-2 font-bold">
             <li className="cursor-pointer">LANG</li>
-            <li className="pl-4 cursor-pointer">HELP</li>
+          <Link to="/faq"><li className="pl-4 cursor-pointer">HELP</li></Link>
             <li className="pl-4 cursor-pointer">V1</li>
           </ul>
           <button
@@ -250,7 +250,7 @@ const Navbar = () => {
             <Link to="#" onClick={toggleMenu} className="block">
               LANG
             </Link>
-            <Link to="#" onClick={toggleMenu} className="block">
+            <Link to="/faq" onClick={toggleMenu} className="block">
               HELP
             </Link>
             <Link to="#" onClick={toggleMenu} className="block">

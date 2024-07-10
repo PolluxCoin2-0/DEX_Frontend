@@ -69,9 +69,9 @@ const SwapForm = () => {
     const fetchPoxPrice = async () => {
       try {
         const data = await getReserves();
-        setPoxPrice(Number(data?.data?.pricePOX).toFixed(6)); 
+        setPoxPrice(Number(data?.data?.pricePOX).toFixed(6));
       } catch (error) {
-        console.error('Error fetching POX price:', error);
+        console.error("Error fetching POX price:", error);
       }
     };
 
@@ -251,12 +251,12 @@ const SwapForm = () => {
   return (
     <div className="w-full pt-6 ">
       <div className="flex justify-between items-center pb-4 text-white">
-      
-
-
         <p className="font-semibold text-lg pl-2">Swap</p>
-        
-        <p>POX Price <span className="text-green-500"></span> = $ {poxPrice>0?poxPrice:0}</p>
+
+        <p>
+          POX Price <span className="text-green-500"></span> = ${" "}
+          {poxPrice > 0 ? poxPrice : 0}
+        </p>
         <RiSettings5Fill
           color="white"
           size={24}
@@ -363,7 +363,7 @@ const SwapForm = () => {
                 <span className="ml-2"> Minimum Received</span>
               </p>
               <p className="text-white">
-                {toAmount>0?toAmount:0} {toToken}
+                {toAmount > 0 ? toAmount : 0} {toToken}
               </p>
             </div>
             {/* <div className="flex justify-between items-center mb-2">

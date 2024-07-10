@@ -59,16 +59,6 @@
 
 // export default Pool;
 
-
-
-
-
-
-
-
-
-
-
 import AnimatedNumber from "../components/AnimatingNumber";
 import { BsQuestionCircle } from "react-icons/bs";
 import { IoMdArrowForward } from "react-icons/io";

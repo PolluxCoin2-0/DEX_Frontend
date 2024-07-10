@@ -7,6 +7,7 @@ import store from "./redux/store";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import RemoveLiquidity from "./pages/RemoveLiquidity";
+import FAQs from "./pages/FAQs";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/pool" element={<Pool />} />
             <Route path="/pool/removeliquidity" element={<RemoveLiquidity />} />
             <Route path="/scan" element={<Scan />} />
+            <Route path="/faq" element={<FAQs />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
         </Router>
