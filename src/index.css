@@ -145,3 +145,8 @@
   pointer-events: none; /* Ensure it doesn’t interfere with interactions */
 }
 
+.custom-toast {
+  top: 4rem;
+}
+
+

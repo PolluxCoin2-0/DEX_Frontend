@@ -1,42 +1,87 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DropdownButton from "../components/DropDownButton";
 import PoolTable from "./PoolTable";
-import { getAddLiquidity } from "../utils/Axios";
-import SuccessModal from "./SuccessModal";
+import {
+  getAddLiquidity,
+  getAllowance,
+  getAllowanceWPOX,
+  getApproval,
+  getApproveWPOX,
+} from "../utils/Axios";
 import { useSelector } from "react-redux";
 import DeadLineDropDown from "./DeadLineDropDown";
 import { TbArrowsDownUp, TbArrowsUpDown } from "react-icons/tb";
 import { RiSettings5Fill } from "react-icons/ri";
+import SlippageDropDown from "./SlippageDropDown";
+import { toast } from "react-toastify";
 
 const PoolForm = () => {
+  const walletAddress = useSelector((state) => state?.wallet);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
-  const [fromToken, setFromToken] = useState("Select a token");
-  const [toToken, setToToken] = useState("Select a token");
-  const [error, setError] = useState("");
-  const [isShowModal, setIsShowModal] = useState(false);
-  const walletAddress = useSelector((state) => state?.wallet);
-  const [deadLine, setDeadLine] = useState("");
+  const [fromToken, setFromToken] = useState("USDX");
+  const [toToken, setToToken] = useState("POX");
+  const [deadLine, setDeadLine] = useState("0.05");
+  const [slippage, setSlippage] = useState("5");
   const [swapArrowState, setSwapArrowState] = useState(true);
   const [bothTokenSelected, setBothTokenSelected] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const settingsRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (settingsRef.current && !settingsRef.current.contains(event.target)) {
+        setShowSetting(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [settingsRef]);
 
   const handleGetAddLiquidity = async () => {
-    const isValidInput =
-      fromAmount &&
-      toAmount &&
-      fromToken !== "Select a token" &&
-      toToken !== "Select a token";
+    const isValidInput = fromAmount && toAmount;
     if (!isValidInput) {
+      toast.error("Enter both token value !");
       return;
     }
 
-    console.log(walletAddress?.address,
-      fromAmount,
-      toAmount,
-      fromToken,
-      toToken,
-      deadLine)
+    setLoading(true); // Set loading state
+    if (loading) return; // Ignore click if already loading
+
+    // allowance APi
+    const allowance = await getAllowance(walletAddress?.address);
+    const allowanceWPox = await getAllowanceWPOX(walletAddress?.address);
+
+    if (allowanceWPox?.data < fromAmount) {
+      const approvedWPox = await getApproveWPOX(
+        walletAddress?.address,
+        fromAmount
+      );
+
+      const signedTransaction = await window.pox.signdata(
+        approvedWPox?.data?.transaction
+      );
+
+      const result = JSON.stringify(
+        await window.pox.broadcast(JSON.parse(signedTransaction[1]))
+      );
+    }
+
+    if (allowance?.data < toAmount) {
+      const transaction = await getApproval(walletAddress?.address, toAmount);
+
+      const signedTransaction = await window.pox.signdata(
+        transaction?.data?.transaction
+      );
+
+      const result = JSON.stringify(
+        await window.pox.broadcast(JSON.parse(signedTransaction[1]))
+      );
+    }
 
     try {
       const data = await getAddLiquidity(
@@ -45,33 +90,44 @@ const PoolForm = () => {
         toAmount,
         fromToken,
         toToken,
-        deadLine
+        deadLine,
+        slippage
+      );
+
+      const signedTransaction = await window.pox.signdata(
+        data?.data?.transaction
+      );
+
+      const result = JSON.stringify(
+        await window.pox.broadcast(JSON.parse(signedTransaction[1]))
       );
 
       if (data?.statusCode === 200) {
-        setIsShowModal(true);
+        toast.success("Liquidity added successfully.");
         return;
       }
+
+      setFromAmount(0);
+      setToAmount(0);
+      setLoading(false); // Reset loading state
     } catch (error) {
-      console.error("Error adding liquidity:", error);
+      toast.error("Error in adding liquidity !");
     }
   };
 
   const handleFromTokenSelect = (token) => {
     if (token === toToken) {
-      setError("You cannot select the same token for both fields.");
+      toast.error("You cannot select the same token for both fields.");
     } else {
       setFromToken(token);
-      setError("");
     }
   };
 
   const handleToTokenSelect = (token) => {
     if (token === fromToken) {
-      setError("You cannot select the same token for both fields.");
+      toast.error("You cannot select the same token for both fields.");
     } else {
       setToToken(token);
-      setError("");
     }
   };
 
@@ -81,13 +137,7 @@ const PoolForm = () => {
         fromToken !== "Select a token" && toToken !== "Select a token"
       );
     };
-
-    // if (fromToken === "Select a token" || toToken === "Select a token") {
-    //   alert("Please select both tokens before swapping.");
-    //   return;
-    // }else{
     checkBothTokensSelected();
-    // }
   }, [fromToken, toToken]);
 
   const handleReverseToken = async () => {
@@ -102,16 +152,22 @@ const PoolForm = () => {
     setToAmount(fromAmount);
     setFromToken(toToken);
     setToToken(fromToken);
-
-    // await getReverseTokenAPI(fromAmount);
   };
 
   const handleFromAmountChange = (e) => {
+    if (!walletAddress?.address) {
+      toast.error("Please connect your wallet");
+      return;
+    }
     const newAmount = e.target.value;
     setFromAmount(newAmount);
   };
 
   const handleToAmountChange = (e) => {
+    if (!walletAddress?.address) {
+      toast.error("Please connect your wallet");
+      return;
+    }
     const newAmount = e.target.value;
     setToAmount(newAmount);
   };
@@ -131,7 +187,11 @@ const PoolForm = () => {
       <div className="relative">
         {showSetting && (
           <div className="mb-4 absolute w-full flex justify-end z-30">
-            <div className="bg-[#1B1B1B] px-6 pb-6 flex flex-col items-end rounded-2xl border-2 border-[#333333]">
+            <div
+              ref={settingsRef}
+              className="bg-[#1B1B1B] px-6 pb-6 flex flex-col items-end rounded-2xl border-2 border-[#333333]"
+            >
+              <SlippageDropDown slippage={slippage} setSlippage={setSlippage} />
               <DeadLineDropDown deadLine={deadLine} setDeadLine={setDeadLine} />
             </div>
           </div>
@@ -150,7 +210,7 @@ const PoolForm = () => {
                 className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl w-full"
                 placeholder="0"
                 onChange={handleFromAmountChange}
-                value={fromAmount}
+                value={fromAmount > 0 ? fromAmount : ""}
                 disabled={!bothTokenSelected}
               />
               <div className="bg-[#181717] px-4 py-2 rounded-2xl border-[1px] border-[#333333] shadow-inner whitespace-nowrap">
@@ -170,7 +230,7 @@ const PoolForm = () => {
                   size={24}
                   className="my-4"
                   style={{ cursor: "pointer" }}
-                  onClick={handleReverseToken}
+                  // onClick={handleReverseToken}
                   color="white"
                 />
               ) : (
@@ -178,7 +238,7 @@ const PoolForm = () => {
                   size={24}
                   className="my-4"
                   style={{ cursor: "pointer" }}
-                  onClick={handleReverseToken}
+                  // onClick={handleReverseToken}
                   color="white"
                 />
               )}
@@ -196,7 +256,7 @@ const PoolForm = () => {
                 type="number"
                 className="py-2 bg-[#1B1B1B] text-white outline-none placeholder:text-4xl text-2xl w-full"
                 placeholder="0"
-                value={toAmount}
+                value={toAmount > 0 ? toAmount : ""}
                 onChange={handleToAmountChange}
                 disabled={!bothTokenSelected}
               />
@@ -212,16 +272,32 @@ const PoolForm = () => {
         </div>
       </div>
       <PoolTable />
-      <button
-        // onClick={() => setShowPoolTable(!showPoolTable)}
-        onClick={handleGetAddLiquidity}
-        className="font-bold w-full mt-14 rounded-md bg-[#F3BB1B] px-4 py-[10px] cursor-pointer"
-      >
-        {walletAddress?.address ? "Add Liquidity" : "Connect To Wallet"}
-      </button>
-
-      {error && <p className="text-red-500 mt-2">{error}</p>}
-      {isShowModal && <SuccessModal />}
+      {loading ? (
+        <button
+          disabled
+          type="button"
+          className="flex justify-center items-center space-x-4 font-bold w-full mt-6 rounded-2xl bg-[#F3BB1B] text-black cursor-pointer px-4 py-4 text-xl relative"
+        >
+          <span className="ml-2 -mt-1">Adding Liquidity</span>
+          <div className="flex justify-center items-center space-x-2">
+            <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0"></div>
+            <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0.10s"></div>
+            <div className="h-2 w-2 bg-white rounded-full animate-bounce animation-delay-0.2s"></div>
+          </div>
+        </button>
+      ) : (
+        <button
+          // onClick={() => setShowPoolTable(!showPoolTable)}
+          onClick={handleGetAddLiquidity}
+          className={`font-bold w-full mt-12 rounded-xl ${
+            !walletAddress?.address
+              ? "bg-[#1B1B1B] text-[#8a8a8a] cursor-not-allowed"
+              : "bg-[#F3BB1B] text-black cursor-pointer"
+          } px-4 py-4  text-xl`}
+        >
+          {walletAddress?.address ? "Add Liquidity" : "Connect To Wallet"}
+        </button>
+      )}
     </div>
   );
 };

@@ -5,6 +5,7 @@ import PolicyOptions from "../components/PolicyOptions";
 import SwitchComp from "../components/SwitchComp";
 import { useEffect, useState } from "react";
 import { getPairLength, getReserves } from "../utils/Axios";
+import { formatNumberWithCommas } from "../utils/formatNumberWithCommas";
 
 const hotTokens =[
   "Name",
@@ -44,13 +45,8 @@ const Scan = () => {
       setPairLength(pairLength?.data)
       setData(data?.data);
     }
-
     fetchdata();
   },[])
-
-  console.log("data",data);
-  console.log("pairlength",pairLength);
-
 
   return (
     <div className="px-4 sm:px-8 md:px-12 py-6">
@@ -60,7 +56,7 @@ const Scan = () => {
       sm:items-center space-y-2 sm:space-y-0 sm:space-x-6 text-white"
       >
         <p className="text-lg md:text-xl font-bold">
-          POX Price: <span className="text-green-500">${data?.pricePOX && data?.pricePOX}</span>
+          POX Price: <span className="text-green-500">${data?.pricePOX && Number(data?.pricePOX).toFixed(6)}</span>
         </p>
         <p className="font-medium">
           Pairs: <span className="text-green-500">{pairLength && pairLength}</span>
@@ -77,7 +73,7 @@ const Scan = () => {
         <div className="bg-white rounded-3xl px-2 md:px-6 lg:px-6 py-4 md:py-6 lg:py-6 w-full lg:w-1/2">
           <p className="pl-4 pb-3">Liquidity</p>
           <div className="flex items-center space-x-4">
-            <p className="text-lg font-medium pl-4">$161,187,730</p>
+            <p className="text-lg font-medium pl-4">$ {data?.reserve1 && formatNumberWithCommas(data?.reserve1)}</p>
             <p className="text-green-500">+0.52%</p>
           </div>
           <AreaChartComp />

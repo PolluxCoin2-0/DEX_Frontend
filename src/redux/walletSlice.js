@@ -4,8 +4,8 @@ const walletSlice = createSlice({
   name: 'wallet',
   initialState: {
     address: "",
-    poxBalance:"",
-    UsdxBalance:"",
+    poxBalance:0,
+    UsdxBalance:0,
   },
   reducers: {
     setWalletAddress: (state, action) => {

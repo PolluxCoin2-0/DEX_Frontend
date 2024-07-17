@@ -2,12 +2,14 @@ import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import Logo from "../assets/Logo.webp";
 import { TbCopyCheck, TbCopyCheckFilled } from "react-icons/tb";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setWalletAddress,
   setPoxBalance,
   setUsdxBalance,
 } from "../redux/walletSlice";
+import { toast } from "react-toastify";
+
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -16,6 +18,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [address, setAddress] = useState();
   const [isCopy, setIsCopy] = useState(false);
+  const walletAddress = useSelector((state) => state?.wallet);
 
   function truncateString(str, maxLength) {
     if (str?.length > 0 && str?.length <= maxLength) {
@@ -42,6 +45,9 @@ const Navbar = () => {
 
   // Connect polink wallet
   async function getPolinkweb() {
+    if(walletAddress?.address){
+     return toast.error("Wallet is already connected");
+    }
     var obj = setInterval(async () => {
       if (window.pox) {
         clearInterval(obj);
@@ -68,7 +74,7 @@ const Navbar = () => {
               width={30}
               className=""
             />
-            <p className="border-r-2 pr-2 font-bold text-2xl">UVI SWAP</p>
+            <p className="border-r-2 pr-2 font-bold text-2xl whitespace-nowrap">UVI SWAP</p>
           </Link>
           <div className="hidden md:flex items-center space-x-6">
             <ul className="flex justify-between space-x-12 font-bold">
@@ -107,9 +113,9 @@ const Navbar = () => {
               </Link>
               <Link to="">
                 <li
-                  className={`cursor-pointer ${
+                  className={`cursor-pointer whitespace-nowrap mr-4 ${
                     currentPath === "/lppools"
-                      ? "text-black rounded-lg bg-yellow-400 px-4 py-[1px]"
+                      ? "text-black rounded-lg bg-yellow-400 px-4 py-[1px] "
                       : ""
                   }`}
                 >
@@ -123,7 +129,7 @@ const Navbar = () => {
         <div className="hidden md:flex space-x-8 justify-center items-center">
           <ul className="flex justify-between space-x-6 divide-x-2 font-bold">
             <li className="cursor-pointer">LANG</li>
-            <li className="pl-4 cursor-pointer">HELP</li>
+          <Link to="/faq"><li className="pl-4 cursor-pointer">HELP</li></Link>
             <li className="pl-4 cursor-pointer">V1</li>
           </ul>
           <button
@@ -244,7 +250,7 @@ const Navbar = () => {
             <Link to="#" onClick={toggleMenu} className="block">
               LANG
             </Link>
-            <Link to="#" onClick={toggleMenu} className="block">
+            <Link to="/faq" onClick={toggleMenu} className="block">
               HELP
             </Link>
             <Link to="#" onClick={toggleMenu} className="block">
