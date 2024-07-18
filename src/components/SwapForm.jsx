@@ -7,6 +7,7 @@ import {
   getReserves,
   getSwap,
   getSwapAmount,
+  saveSwappedDatatoMongo,
 } from "../utils/Axios";
 import { useSelector } from "react-redux";
 import SlippageDropDown from "./SlippageDropDown";
@@ -168,6 +169,7 @@ const SwapForm = () => {
       slippage,
       deadLine
     );
+    console.log(data)
 
     const signedTransaction = await window.pox.signdata(
       data?.data?.transaction
@@ -191,6 +193,8 @@ const SwapForm = () => {
     }, 1000);
 
     if (data?.data) {
+    const res=  await saveSwappedDatatoMongo(data?.data?.transaction?.txID, fromAmount, toAmount, fromToken, toToken, walletAddress)
+    console.log(res)
       toast.success("Swap successfully!");
     } else {
       toast.error("Something went wrong!");
