@@ -19,7 +19,7 @@ const Pool = () => {
           $ <AnimatedNumber value={totalValueLocked} />
         </p>
       </div> */}
-      <div className="pt-6 pb-2 w-full md:w-1/3 md:pt-12">
+      <div className="pt-6 pb-2 w-full sm:w-full md:w-1/2 lg:w-1/2 xl:w-1/2 2xl:w-1/3 md:pt-12 ">
           {!showPoolForm ? (
             <div className="glassmorph-container">
               <button
@@ -29,8 +29,8 @@ const Pool = () => {
                 Add Liquidity
               </button>
               <div className="flex justify-between items-center w-full md:w-2/3 mt-2">
-                <p className="text-white font-medium">Your Liquidity</p>
-             <Link to="/pool/removeliquidity"><p className="font-light cursor-pointer text-yellow-400 underline">Remove Liquidity</p></Link>
+                <p className="text-white font-medium whitespace-nowrap">Your Liquidity</p>
+             <Link to="/pool/removeliquidity"><p className="font-light cursor-pointer text-yellow-400 underline whitespace-nowrap">Remove Liquidity</p></Link>
               </div>
               <div className="flex justify-center items-center mt-10 space-x-4">
                 <button className="font-bold relative inline-flex items-center justify-center px-10 py-4 overflow-hidden
@@ -39,7 +39,7 @@ const Pool = () => {
                   <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30"></span>
                   <span className="relative z-10 flex items-center space-x-2">
                     <IoWalletOutline size={20} />
-                    <span>View your liquidity</span>
+                    <span className="whitespace-nowrap">View your liquidity</span>
                   </span>
                 </button>
                 <IoMdArrowForward size={24} color="white" />

@@ -66,9 +66,9 @@ export const saveSwappedDatatoMongo = async (
             toSymbol: toToken,
             fromAmount: fromAmount,
             toAmount: toAmount,
-            fromToken: from_Token,
-            toToken: to_Token,
-            walletAddress: walletAddress,
+            fromTokenAddress: from_Token,
+            toTokenAddress: to_Token,
+           "walletAddress": walletAddress,
         });
         return response?.data;
     } catch (error) {
@@ -245,3 +245,29 @@ export const getApprovePair=async(walletAddress, amount)=>{
     }
 }
 
+export const getScanLiquidityGraphData = async(startDate, endDate)=>{
+    try {
+        const res = await axios.get(`${SECONDARY_BASE_URL}/getLiquidityGraphData?startDate=${startDate}&endDate=${endDate}`);
+        return res?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getScanVolumeGraphData = async(startDate, endDate, granularity)=>{
+    try {
+        const res = await axios.get(`${SECONDARY_BASE_URL}/getLiquidityValume?startDate=${startDate}&endDate=${endDate}&granularity=${granularity}`);
+        return res?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getSearchedData = async(query, pageNo)=>{
+    try {
+        const res = await axios.get(`${SECONDARY_BASE_URL}/getAllSwapTransaction?search=${query}&page=${pageNo}&limit=10`)
+        return res?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}

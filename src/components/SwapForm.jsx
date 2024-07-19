@@ -28,6 +28,7 @@ const SwapForm = () => {
   const dispatch = useDispatch();
   const settingsRef = useRef(null);
   const walletAddress = useSelector((state) => state?.wallet.address);
+  const networkType = useSelector((state) => state?.wallet.Network);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
   const [fromToken, setFromToken] = useState("POX");
@@ -138,6 +139,10 @@ const SwapForm = () => {
   }, [debouncedAmount]);
 
   const handleSwap = async () => {
+    if(networkType==="Yuvi Testnet"){
+      toast.error("Please switch to the Mainnet network");
+      return;
+    }
     const isValidInput =
       fromAmount &&
       fromToken !== "Select a token" &&
@@ -147,8 +152,8 @@ const SwapForm = () => {
       return;
     }
 
-    setLoading(true); // Set loading state
     if (loading) return; // Ignore click if already loading
+    setLoading(true); // Set loading state
 
     const allowance = await getAllowance(walletAddress);
     const transaction = await getApproval(walletAddress, fromAmount);

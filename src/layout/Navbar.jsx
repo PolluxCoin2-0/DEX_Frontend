@@ -7,6 +7,8 @@ import {
   setWalletAddress,
   setPoxBalance,
   setUsdxBalance,
+  setNetwork,
+  
 } from "../redux/walletSlice";
 import { toast } from "react-toastify";
 
@@ -54,6 +56,7 @@ const Navbar = () => {
         const detailsData = JSON.stringify(await window.pox.getDetails());
         const parsedDetailsObject = JSON.parse(detailsData);
         dispatch(setWalletAddress(parsedDetailsObject[1].data?.wallet_address));
+        dispatch(setNetwork(parsedDetailsObject[1].data?.Network));
         setAddress(parsedDetailsObject[1]?.data?.wallet_address);
         dispatch(
           setPoxBalance(parsedDetailsObject[1]?.data?.Balance / Math.pow(10, 6))

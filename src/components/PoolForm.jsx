@@ -4,9 +4,7 @@ import PoolTable from "./PoolTable";
 import {
   getAddLiquidity,
   getAllowance,
-  getAllowanceWPOX,
   getApproval,
-  getApproveWPOX,
   getQuateValue,
 } from "../utils/Axios";
 import { useSelector } from "react-redux";
@@ -18,9 +16,9 @@ import { toast } from "react-toastify";
 import polluxWeb from "polluxweb";
 import { without6Decimal } from "../utils/converter";
 
-
 const PoolForm = () => {
   const walletAddress = useSelector((state) => state?.wallet);
+  const networkType = useSelector((state) => state?.wallet.Network);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
   const [fromToken, setFromToken] = useState("USDX");
@@ -57,6 +55,11 @@ const PoolForm = () => {
   },[fromAmount])
 
   const handleGetAddLiquidity = async () => {
+    if(networkType==="Yuvi Testnet"){
+      toast.error("Please switch to the Mainnet network");
+      return;
+    }
+
     const isValidInput = fromAmount && toAmount;
     if (!isValidInput) {
       toast.error("Enter both token value !");
