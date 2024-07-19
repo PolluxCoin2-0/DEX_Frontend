@@ -34,11 +34,11 @@ pipeline {
             }
         } 
 
-        // stage('Deploy to Web Server') {
-        //     steps {
-        //         sh 'cp -r dist/* /var/www/html'
-        //         sh 'cp -r dist/* /var/www/uviswap'
-        //     }
-        // }
+        stage('Deploy to Web Server') {
+            steps {
+                sh 'cp -r dist/* /var/www/html'
+                sh 'cp -r dist/* /var/www/uviswap'
+            }
+        }
     }
 }
