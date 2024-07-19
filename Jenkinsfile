@@ -20,19 +20,24 @@ pipeline {
 
         stage('Installing Dependencies') {
             steps {
+                sh 'rm -rf node_modules || true'
                 sh 'npm i' 
             }
         }
 
         stage('Build the Frontend application') {
             steps {
+                sh 'rm -rf dist || true'
                 sh 'npm run build'
+                sh 'chmod 755 dist/assets/*'
+                sh 'chmod 755 dist/index.html'
             }
         } 
 
-        // stage('Copying the files under /dist folder') {
+        // stage('Deploy to Web Server') {
         //     steps {
-        //         sh '
+        //         sh 'cp -r dist/* /var/www/html'
+        //         sh 'cp -r dist/* /var/www/uviswap'
         //     }
         // }
     }
