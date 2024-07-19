@@ -4,7 +4,7 @@ pipleine {
     stages {
         stage('Github Checkout') {
             steps { 
-                git branch: 'main', credentialsId: 'github-auth', url: 'https://github.com/PolluxCoin2-0/Yuvi_Swap_Mai
+                git branch: 'main', credentialsId: 'github-auth', url: 'https://github.com/PolluxCoin2-0/Yuvi_Swap_Main.git'
             }
         }
         
