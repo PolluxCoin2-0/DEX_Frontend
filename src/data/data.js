@@ -56,4 +56,4 @@ const data = [
     },
 ]
 
-  export {data, tableData};
+  export {data, tableData,};

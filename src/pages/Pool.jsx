@@ -46,30 +46,30 @@ const Pool = () => {
               </div>
             </div>
           ) : (
-            // <PoolForm />
-            <div
-            className="h-screen w-full flex items-center justify-center text-center px-5 bg-black"
-          >
-            <div className="flex flex-col justify-center text-white w-full">
-              <h1 className="text-5xl">
-                We are <b>Almost</b> there!
-              </h1>
-              <p>Stay tuned for something amazing!!!</p>
+            <PoolForm />
+          //   <div
+          //   className="h-screen w-full flex items-center justify-center text-center px-5 bg-black"
+          // >
+          //   <div className="flex flex-col justify-center text-white w-full">
+          //     <h1 className="text-5xl">
+          //       We are <b>Almost</b> there!
+          //     </h1>
+          //     <p>Stay tuned for something amazing!!!</p>
         
-              <div className="mt-10 mb-5">
-                <div className="shadow w-full bg-white mt-2 max-w-2xl mx-auto rounded-full">
-                  <div
-                    className="rounded-full bg-yellow-400 text-base leading-none text-center text-black font-bold py-1"
-                    style={{ width: '75%' }}
-                  >
-                    75%
-                  </div>
-                </div>
-              </div>
+          //     <div className="mt-10 mb-5">
+          //       <div className="shadow w-full bg-white mt-2 max-w-2xl mx-auto rounded-full">
+          //         <div
+          //           className="rounded-full bg-yellow-400 text-base leading-none text-center text-black font-bold py-1"
+          //           style={{ width: '75%' }}
+          //         >
+          //           75%
+          //         </div>
+          //       </div>
+          //     </div>
         
         
-            </div>
-          </div>
+          //   </div>
+          // </div>
           )}
       </div>
 

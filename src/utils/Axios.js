@@ -271,3 +271,21 @@ export const getSearchedData = async(query, pageNo)=>{
         console.log(error);
     }
 }
+
+export const getTotalTransactionsLast24Hours = async()=>{
+    try {
+        const res = await axios.get(SECONDARY_BASE_URL + "/getTotalTransactionsLast24Hours");
+        return res?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getTradingPair = async(startDate, endDate)=>{
+    try {
+        const res = await axios.get(SECONDARY_BASE_URL + `/getTradingPair?startDate=${startDate}&endDate=${endDate}`)
+        return res?.data;
+    } catch (error) {
+        console.log(error)
+    }
+}

@@ -1,6 +1,6 @@
 import Home from "./Home";
 import Pool from "./Pool";
-import Scan from "./Scan";
+import Scan from "./scan/Scan";
 import Swap from "./Swap";
 import Lppools from "./Lppools";
 import ErrorPage from "./ErrorPage";
