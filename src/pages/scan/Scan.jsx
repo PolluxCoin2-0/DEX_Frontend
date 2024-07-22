@@ -105,8 +105,10 @@ const Scan = () => {
           <div className="flex items-center space-x-4">
             <p className="text-lg font-medium pl-4">
               ${" "}
-              {data?.reserve1 &&
-                formatNumberWithCommas(Number(data?.reserve1).toFixed(6))}
+              {data?.reserve1 && data?.pricePOX &&
+  formatNumberWithCommas((Number(data.reserve1) * data.pricePOX).toFixed(6))
+}
+
             </p>
             <p className="text-green-500">+0.52%</p>
           </div>
@@ -131,14 +133,16 @@ const Scan = () => {
       <div className="pl-4">
         <p className="font-medium text-lg mt-6 mb-2 text-white">Hot Tokens</p>
         <HotTokensTable
-          liquidity={
-            data?.reserve1 &&
-            formatNumberWithCommas(Number(data?.reserve1).toFixed(6))
+          liquidityPOX= {data?.reserve1 && data?.pricePOX &&
+            formatNumberWithCommas((Number(data.reserve1) * data.pricePOX).toFixed(6))
           }
-          volume={
+          liquidityUSDX={data?.reserve0 && formatNumberWithCommas((Number(data.reserve0)).toFixed(6))}
+          volumePOX={
             data?.reserve1 &&
-            formatNumberWithCommas(Number(data?.reserve1).toFixed(6) * 2)
+            formatNumberWithCommas((Number(data.reserve1) * data.pricePOX).toFixed(6) * 2)
           }
+          volumeUSDX={data?.reserve0 &&
+            formatNumberWithCommas(Number(data?.reserve0).toFixed(6) * 2)}
           poxPrice={data?.pricePOX && Number(data?.pricePOX).toFixed(6)}
         />
       </div>
@@ -147,10 +151,10 @@ const Scan = () => {
       <div className="pl-4">
         <p className="font-medium text-lg mt-6 mb-2 text-white">Trading Pair</p>
         <TradingPairTable
-          liquidity={
-            data?.reserve1 &&
-            formatNumberWithCommas(Number(data?.reserve1).toFixed(6))
-          }
+         liquidityPOX= {data?.reserve1 && data?.pricePOX &&
+          formatNumberWithCommas((Number(data.reserve1) * data.pricePOX).toFixed(6))
+        }
+        liquidityUSDX={data?.reserve0 && formatNumberWithCommas((Number(data.reserve0)).toFixed(6))}
         />
       </div>
 
