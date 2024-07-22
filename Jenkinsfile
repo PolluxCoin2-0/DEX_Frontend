@@ -36,10 +36,10 @@ pipeline {
 
         stage('Deploy to Web Server') {
             steps {
-                sh 'rm -rf /var/www/test/*'
-                sh 'rm -rf /var/www/test1/*'
-                sh 'cp -r dist/* /var/www/test'
-                sh 'cp -r dist/* /var/www/test1'
+                sh 'rm -rf /var/www/html/*'
+                sh 'rm -rf /var/www/uviswap/*'
+                sh 'cp -r dist/* /var/www/html'
+                sh 'cp -r dist/* /var/www/uviswap'
             }
         }
     }
