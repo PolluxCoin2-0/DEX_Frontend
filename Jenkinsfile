@@ -25,7 +25,7 @@ pipeline {
             }
         }
 
-        stage('Build the Frontend application') {
+        stage('Build the Frontend Application') {
             steps {
                 sh 'rm -rf dist || true'
                 sh 'npm run build'
