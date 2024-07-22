@@ -4,9 +4,8 @@ import PoolTable from "./PoolTable";
 import {
   getAddLiquidity,
   getAllowance,
-  getAllowanceWPOX,
   getApproval,
-  getApproveWPOX,
+  getQuateValue,
 } from "../utils/Axios";
 import { useSelector } from "react-redux";
 import DeadLineDropDown from "./DeadLineDropDown";
@@ -14,15 +13,18 @@ import { TbArrowsDownUp, TbArrowsUpDown } from "react-icons/tb";
 import { RiSettings5Fill } from "react-icons/ri";
 import SlippageDropDown from "./SlippageDropDown";
 import { toast } from "react-toastify";
+import polluxWeb from "polluxweb";
+import { without6Decimal } from "../utils/converter";
 
 const PoolForm = () => {
   const walletAddress = useSelector((state) => state?.wallet);
+  const networkType = useSelector((state) => state?.wallet.Network);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
   const [fromToken, setFromToken] = useState("USDX");
   const [toToken, setToToken] = useState("POX");
-  const [deadLine, setDeadLine] = useState("0.05");
-  const [slippage, setSlippage] = useState("5");
+  const [deadLine, setDeadLine] = useState("5");
+  const [slippage, setSlippage] = useState("0.05");
   const [swapArrowState, setSwapArrowState] = useState(true);
   const [bothTokenSelected, setBothTokenSelected] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
@@ -42,7 +44,22 @@ const PoolForm = () => {
     };
   }, [settingsRef]);
 
+  useEffect(()=>{
+    const fetchData = async()=>{
+    const quateValue = await getQuateValue(fromAmount);
+    const res = await polluxWeb.toDecimal(quateValue?.data?.[0]?.hex)
+  const quate =  without6Decimal(res);
+    setToAmount(quate);
+    }
+    fetchData();
+  },[fromAmount])
+
   const handleGetAddLiquidity = async () => {
+    if(networkType==="Yuvi Testnet"){
+      toast.error("Please switch to the Mainnet network");
+      return;
+    }
+
     const isValidInput = fromAmount && toAmount;
     if (!isValidInput) {
       toast.error("Enter both token value !");
@@ -54,24 +71,7 @@ const PoolForm = () => {
 
     // allowance APi
     const allowance = await getAllowance(walletAddress?.address);
-    const allowanceWPox = await getAllowanceWPOX(walletAddress?.address);
 
-    if (allowanceWPox?.data < fromAmount) {
-      const approvedWPox = await getApproveWPOX(
-        walletAddress?.address,
-        fromAmount
-      );
-
-      const signedTransaction = await window.pox.signdata(
-        approvedWPox?.data?.transaction
-      );
-
-      const result = JSON.stringify(
-        await window.pox.broadcast(JSON.parse(signedTransaction[1]))
-      );
-    }
-
-    if (allowance?.data < toAmount) {
       const transaction = await getApproval(walletAddress?.address, toAmount);
 
       const signedTransaction = await window.pox.signdata(
@@ -81,30 +81,32 @@ const PoolForm = () => {
       const result = JSON.stringify(
         await window.pox.broadcast(JSON.parse(signedTransaction[1]))
       );
-    }
 
     try {
       const data = await getAddLiquidity(
         walletAddress?.address,
         fromAmount,
-        toAmount,
         fromToken,
         toToken,
         deadLine,
-        slippage
       );
+
+      console.log(data);
 
       const signedTransaction = await window.pox.signdata(
         data?.data?.transaction
       );
 
+      console.log(signedTransaction)
+
       const result = JSON.stringify(
         await window.pox.broadcast(JSON.parse(signedTransaction[1]))
       );
 
+      console.log(result)
+
       if (data?.statusCode === 200) {
         toast.success("Liquidity added successfully.");
-        return;
       }
 
       setFromAmount(0);

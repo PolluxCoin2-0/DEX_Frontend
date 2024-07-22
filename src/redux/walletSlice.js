@@ -6,6 +6,7 @@ const walletSlice = createSlice({
     address: "",
     poxBalance:0,
     UsdxBalance:0,
+    Network:"",
   },
   reducers: {
     setWalletAddress: (state, action) => {
@@ -17,8 +18,11 @@ const walletSlice = createSlice({
     setUsdxBalance: (state, action) => {
       state.UsdxBalance = action.payload;
     },
+    setNetwork: (state, action) => {
+      state.Network = action.payload;
+    },
   },
 });
 
-export const { setWalletAddress,setPoxBalance,setUsdxBalance } = walletSlice.actions;
+export const { setWalletAddress,setPoxBalance,setUsdxBalance,setNetwork } = walletSlice.actions;
 export default walletSlice.reducer;

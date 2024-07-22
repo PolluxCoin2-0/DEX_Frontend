@@ -4,26 +4,31 @@ import TableCom from "../components/TableCom";
 import PolicyOptions from "../components/PolicyOptions";
 import SwitchComp from "../components/SwitchComp";
 import { useEffect, useState } from "react";
-import { getPairLength, getReserves } from "../utils/Axios";
+import {
+  getPairLength,
+  getReserves,
+  getScanLiquidityGraphData,
+  getScanVolumeGraphData,
+} from "../utils/Axios";
 import { formatNumberWithCommas } from "../utils/formatNumberWithCommas";
 
-const hotTokens =[
+const hotTokens = [
   "Name",
   "Liquidity",
   "Volume (24hr)",
   "Price",
   "Price Change (24hr)",
-  "Actions"
-]
+  "Actions",
+];
 
-const tradingPair =[
+const tradingPair = [
   "Name",
   "Liquidity",
   "Volume (24hr)",
   "Volume (7hr)",
   "Fees (24hrs)",
-  "Actions"
-]
+  "Actions",
+];
 
 const transctions = [
   "All",
@@ -31,22 +36,61 @@ const transctions = [
   "Token Amount",
   "Token Amount",
   "Account",
-  "Time"
-]
+  "Time",
+];
 
 const Scan = () => {
   const [data, setData] = useState({});
   const [pairLength, setPairLength] = useState(0);
-
-  useEffect(()=>{
-    const fetchdata=async()=>{
+  const [scanLiquidityGraphDataArray, setScanLiquidityGraphDataArray] = useState([]);
+  const [scanVolumeGraphDataArray, setScanVolumeGraphDataArray] = useState([]);
+  const [selectedInterval, setSelectedInterval] = useState('daily');
+   
+  useEffect(() => {
+    const fetchdata = async () => {
       const data = await getReserves();
       const pairLength = await getPairLength();
-      setPairLength(pairLength?.data)
+      setPairLength(pairLength?.data);
       setData(data?.data);
-    }
+
+      // Function to format date as 'MMM DD YYYY'
+      function formatDate(date) {
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month and pad with zero if needed
+        const day = date.getDate();
+        const year = date.getFullYear();
+        return `${month}/${day}/${year}`;
+      }
+
+      // Get current date
+      const currentDate = new Date();
+      const formattedCurrentDate = formatDate(currentDate);
+
+      console.log(formattedCurrentDate)
+
+      // Get date a month before
+      const previousMonthDate = new Date();
+      previousMonthDate.setMonth(previousMonthDate.getMonth() - 1);
+      const formattedPreviousMonthDate = formatDate(previousMonthDate);
+
+      // Function for liquidity graph data
+      const liquidityGraphData = await getScanLiquidityGraphData(
+        formattedCurrentDate,
+        formattedPreviousMonthDate
+      );
+      console.log(liquidityGraphData);
+      setScanLiquidityGraphDataArray(liquidityGraphData);
+
+      // Function for volume graph data
+      const volumeGraphData = await getScanVolumeGraphData(
+        formattedPreviousMonthDate,
+        formattedCurrentDate,
+        selectedInterval
+      );
+      console.log(volumeGraphData);
+      setScanVolumeGraphDataArray(volumeGraphData);
+    };
     fetchdata();
-  },[])
+  }, [selectedInterval]);
 
   return (
     <div className="px-4 sm:px-8 md:px-12 py-6">
@@ -56,10 +100,14 @@ const Scan = () => {
       sm:items-center space-y-2 sm:space-y-0 sm:space-x-6 text-white"
       >
         <p className="text-lg md:text-xl font-bold">
-          POX Price: <span className="text-green-500">${data?.pricePOX && Number(data?.pricePOX).toFixed(6)}</span>
+          POX Price:{" "}
+          <span className="text-green-500">
+            ${data?.pricePOX && Number(data?.pricePOX).toFixed(6)}
+          </span>
         </p>
         <p className="font-medium">
-          Pairs: <span className="text-green-500">{pairLength && pairLength}</span>
+          Pairs:{" "}
+          <span className="text-green-500">{pairLength && pairLength}</span>
         </p>
         <p className="font-medium">
           Transactions (24hr): <span className="text-green-500">2,464</span>
@@ -73,10 +121,12 @@ const Scan = () => {
         <div className="bg-white rounded-3xl px-2 md:px-6 lg:px-6 py-4 md:py-6 lg:py-6 w-full lg:w-1/2">
           <p className="pl-4 pb-3">Liquidity</p>
           <div className="flex items-center space-x-4">
-            <p className="text-lg font-medium pl-4">$ {data?.reserve1 && formatNumberWithCommas(data?.reserve1)}</p>
+            <p className="text-lg font-medium pl-4">
+              $ {data?.reserve1 && formatNumberWithCommas(data?.reserve1)}
+            </p>
             <p className="text-green-500">+0.52%</p>
           </div>
-          <AreaChartComp />
+          <AreaChartComp value={""} />
         </div>
         <div className="bg-white rounded-3xl px-6 py-6 w-full lg:w-1/2">
           <p className="pl-4">Volume</p>
@@ -86,36 +136,29 @@ const Scan = () => {
               <p className="text-green-500">+0.52%</p>
             </div>
             <div>
-              <SwitchComp />
+              <SwitchComp setSelectedInterval={setSelectedInterval}/>
             </div>
           </div>
-          <AreaChartComp />
+          <AreaChartComp value={""} />
         </div>
       </div>
 
       {/* Hot Tokens */}
       <div className="pl-4">
         <p className="font-medium text-lg mt-6 mb-2 text-white">Hot Tokens</p>
-        <TableCom
-          tableType="hottokens"
-          attributesArray={hotTokens}
-        />
+        <TableCom tableType="hottokens" attributesArray={hotTokens} />
       </div>
 
       {/* Trading Pair */}
       <div className="pl-4">
         <p className="font-medium text-lg mt-6 mb-2 text-white">Trading Pair</p>
-        <TableCom 
-        tableType="tradingpair"
-        attributesArray={tradingPair} />
+        <TableCom tableType="tradingpair" attributesArray={tradingPair} />
       </div>
 
       {/* Transactions */}
       <div className="pl-4">
         <p className="font-medium text-lg mt-6 mb-2 text-white">Transactions</p>
-        <TableCom
-         tableType="transactions"
-         attributesArray={transctions} />
+        <TableCom tableType="transactions" attributesArray={transctions} />
       </div>
       <PolicyOptions />
     </div>

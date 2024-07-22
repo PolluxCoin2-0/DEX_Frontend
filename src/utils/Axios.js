@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
+const SECONDARY_BASE_URL = import.meta.env.VITE_SECONDARY_BASE_URL;
 const POX_TOKEN_ADDRESS = import.meta.env.VITE_POX_TOKEN_ADDRESS;
 const USDX_TOKEN_ADDRESS = import.meta.env.VITE_USDX_TOKEN_ADDRESS;
 
@@ -35,6 +36,46 @@ export const getSwap = async (walletAddress, fromAmount, fromToken, toToken, sli
   }
 };
 
+export const saveSwappedDatatoMongo = async (
+    trxId, 
+    fromAmount, 
+    toAmount, 
+    fromToken, 
+    toToken, 
+    walletAddress) => {
+
+    let from_Token;
+    let to_Token;
+
+    if (fromToken === "POX") {
+        from_Token = POX_TOKEN_ADDRESS;
+    } else if (fromToken === "USDX") {
+        from_Token = USDX_TOKEN_ADDRESS;
+    }
+
+    if (toToken === "POX") {
+        to_Token = POX_TOKEN_ADDRESS;
+    } else if (toToken === "USDX") {
+        to_Token = USDX_TOKEN_ADDRESS;
+    }
+
+    try {
+        const response = await axios.post(SECONDARY_BASE_URL + "/createSwap",{
+            trxId: trxId,
+            fromSymbol: fromToken,
+            toSymbol: toToken,
+            fromAmount: fromAmount,
+            toAmount: toAmount,
+            fromTokenAddress: from_Token,
+            toTokenAddress: to_Token,
+           "walletAddress": walletAddress,
+        });
+        return response?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const getSwapAmount = async(amountIn,fromToken, toToken)=>{
     let from_Token;
     let to_Token;
@@ -64,7 +105,7 @@ export const getSwapAmount = async(amountIn,fromToken, toToken)=>{
 
 export const getQuateValue = async(fromAmount) =>{
     try {
-        const response = await axios.post(BASE_URL+"/quate",{
+        const response = await axios.post("http://192.168.1.29:16666/api/yuviSwap/quate",{
             "amountA": fromAmount
         });
         return response?.data;
@@ -73,7 +114,7 @@ export const getQuateValue = async(fromAmount) =>{
     }
 }
 
-export const getAddLiquidity = async (walletAddress, fromAmount, toAmount, fromToken, toToken, deadLine,slippage) => {
+export const getAddLiquidity = async (walletAddress, fromAmount, fromToken, toToken, deadLine) => {
     let from_Token;
     let to_Token;
 
@@ -89,20 +130,12 @@ export const getAddLiquidity = async (walletAddress, fromAmount, toAmount, fromT
         to_Token = USDX_TOKEN_ADDRESS;
     }
 
-    // Ensure that both tokens are assigned correctly
-    if (!from_Token || !to_Token) {
-        console.log("Invalid token addresses");
-        return;
-    }
-
-    try {
-        const response = await axios.post(`${BASE_URL}/addLiquidityPox`, {
-            "amountETH": fromAmount,
-            "amountTokenDesired": toAmount,
+           try {
+        const response = await axios.post(`http://192.168.1.29:16666/api/yuviSwap/addLiquidityPox`, {
+            "amountTokenDesired": fromAmount,
             "walletAddress": walletAddress,
-            "tokenAaddress": "371dedecf8526cfbc8cd6b993f99ac2a0980b3b214",  // USDX_TOKEN_ADDRESS
+            "tokenAaddress": "37c412bd241e4599fa3c191d46b5e53dedb293f006",  // USDX_TOKEN_ADDRESS
             "deadline":parseInt(deadLine),
-            "slippage":parseInt(slippage)
         });
             return response.data;
     } catch (error) {
@@ -212,3 +245,29 @@ export const getApprovePair=async(walletAddress, amount)=>{
     }
 }
 
+export const getScanLiquidityGraphData = async(startDate, endDate)=>{
+    try {
+        const res = await axios.get(`${SECONDARY_BASE_URL}/getLiquidityGraphData?startDate=${startDate}&endDate=${endDate}`);
+        return res?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getScanVolumeGraphData = async(startDate, endDate, granularity)=>{
+    try {
+        const res = await axios.get(`${SECONDARY_BASE_URL}/getLiquidityValume?startDate=${startDate}&endDate=${endDate}&granularity=${granularity}`);
+        return res?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getSearchedData = async(query, pageNo)=>{
+    try {
+        const res = await axios.get(`${SECONDARY_BASE_URL}/getAllSwapTransaction?search=${query}&page=${pageNo}&limit=10`)
+        return res?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}

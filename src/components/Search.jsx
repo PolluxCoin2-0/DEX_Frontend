@@ -1,25 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
-
-const suggestionsData = [
-  'apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew',
-  'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'quince', 'raspberry',
-  'strawberry', 'tangerine', 'ugli fruit', 'vanilla', 'watermelon', 'xigua',
-  'yellow passion fruit', 'zucchini'
-];
+import { getSearchedData } from '../utils/Axios';
+import { TimeFormatting } from '../utils/TimeFormatting';
+import { Link } from 'react-router-dom';
 
 const Search = () => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const searchRef = useRef(null);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = async(e) => {
     const value = e.target.value;
     setQuery(value);
     if (value) {
-      const filteredSuggestions = suggestionsData.filter((suggestion) =>
-        suggestion.toLowerCase().includes(value.toLowerCase())
-      ).slice(0, 5);
-      setSuggestions(filteredSuggestions);
+      const searchedData = await getSearchedData(value, 1);
+      setSuggestions(searchedData?.data?.swapTransaction);
     } else {
       setSuggestions([]);
     }
@@ -27,12 +21,6 @@ const Search = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Search query:', query);
-  };
-
-  const handleSuggestionClick = (suggestion) => {
-    setQuery(suggestion);
-    setSuggestions([]);
   };
 
   const handleClickOutside = (event) => {
@@ -52,7 +40,7 @@ const Search = () => {
     <div ref={searchRef} className="relative mx-auto text-gray-600 mb-6 w-full">
       <form onSubmit={handleSubmit} className="pt-2">
         <input
-          className="shadow-md bg-[#261A4C] px-5 py-3 pr-16 rounded-lg text-sm focus:outline-none w-full"
+          className="shadow-md bg-[#F3BB1B] px-5 py-3 pr-16 rounded-lg text-sm focus:outline-none w-full text-white placeholder:text-white"
           type="search"
           name="search"
           placeholder="Enter a name or paste the address to search for a PoxSwap trading pair"
@@ -61,7 +49,7 @@ const Search = () => {
         />
         <button type="submit" className="absolute right-2 top-1 mt-5 mr-4">
           <svg
-            className="text-yellow-600 h-4 w-4 fill-current"
+            className="text-white h-4 w-4 fill-current"
             xmlns="http://www.w3.org/2000/svg"
             xmlnsXlink="http://www.w3.org/1999/xlink"
             version="1.1"
@@ -79,18 +67,27 @@ const Search = () => {
         </button>
       </form>
       {suggestions.length > 0 && (
-        <ul className="absolute bg-white border border-gray-300 w-full mt-1 rounded-lg z-10">
-          {suggestions.map((suggestion, index) => (
-            <li
-              key={index}
-              className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-              onClick={() => handleSuggestionClick(suggestion)}
-            >
-              {suggestion}
-            </li>
-          ))}
-        </ul>
-      )}
+  <ul className="absolute bg-white border border-gray-300 w-full mt-1 rounded-lg z-10 shadow-lg">
+   {suggestions.map((suggestion, index) => (
+  <li
+    key={index}
+    className="px-4 py-2 cursor-pointer border-b last:border-none border-gray-300 hover:bg-gray-100 sm:px-6 md:px-8 lg:px-10"
+  >
+    <Link to={`https://poxscan.io/transactions-detail/${suggestion?.trxId}`}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center truncate">
+        <span className="font-medium text-gray-800 text-sm sm:text-base md:text-lg ">
+          <span className='bg-gray-200 rounded p-1 '>Transaction ID:</span> {suggestion?.trxId}
+        </span>
+        <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs sm:text-sm md:text-base mt-2 sm:mt-0">
+          {suggestion?.createdAt && TimeFormatting(suggestion?.createdAt)}
+        </span>
+      </div>
+    </Link>
+  </li>
+))}
+  </ul>
+)}
+
     </div>
   );
 };

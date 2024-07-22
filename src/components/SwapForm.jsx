@@ -7,6 +7,7 @@ import {
   getReserves,
   getSwap,
   getSwapAmount,
+  saveSwappedDatatoMongo,
 } from "../utils/Axios";
 import { useSelector } from "react-redux";
 import SlippageDropDown from "./SlippageDropDown";
@@ -27,6 +28,7 @@ const SwapForm = () => {
   const dispatch = useDispatch();
   const settingsRef = useRef(null);
   const walletAddress = useSelector((state) => state?.wallet.address);
+  const networkType = useSelector((state) => state?.wallet.Network);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
   const [fromToken, setFromToken] = useState("POX");
@@ -102,7 +104,7 @@ const SwapForm = () => {
 
   useEffect(() => {
     const fetchSwapAmount = async () => {
-      if (fromAmount > 1000) {
+      if (fromAmount > 5000) {
         toast.error("Limit exceeded");
         return;
       }
@@ -137,6 +139,10 @@ const SwapForm = () => {
   }, [debouncedAmount]);
 
   const handleSwap = async () => {
+    if(networkType==="Yuvi Testnet"){
+      toast.error("Please switch to the Mainnet network");
+      return;
+    }
     const isValidInput =
       fromAmount &&
       fromToken !== "Select a token" &&
@@ -146,8 +152,8 @@ const SwapForm = () => {
       return;
     }
 
-    setLoading(true); // Set loading state
     if (loading) return; // Ignore click if already loading
+    setLoading(true); // Set loading state
 
     const allowance = await getAllowance(walletAddress);
     const transaction = await getApproval(walletAddress, fromAmount);
@@ -168,6 +174,7 @@ const SwapForm = () => {
       slippage,
       deadLine
     );
+    console.log(data)
 
     const signedTransaction = await window.pox.signdata(
       data?.data?.transaction
@@ -191,6 +198,8 @@ const SwapForm = () => {
     }, 1000);
 
     if (data?.data) {
+    const res=  await saveSwappedDatatoMongo(data?.data?.transaction?.txID, fromAmount, toAmount, fromToken, toToken, walletAddress)
+    console.log(res)
       toast.success("Swap successfully!");
     } else {
       toast.error("Something went wrong!");

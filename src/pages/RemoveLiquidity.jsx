@@ -9,17 +9,16 @@ import polluxWeb from "polluxweb";
 import { toast } from "react-toastify";
 
 const RemoveLiquidity = () => {
-  const [percentage, setPercentage] = useState("25");
+  const [percentage, setPercentage] = useState("");
   const [customPercentage, setCustomPercentage] = useState("");
-  const [deadline, setDeadline] = useState("5");
+  const [deadline, setDeadline] = useState("");
   const [customDeadline, setCustomDeadline] = useState("");
   const [customPercentageSelected, setCustomPercentageSelected] =
     useState(false);
   const [customDeadlineSelected, setCustomDeadlineSelected] = useState(false);
   const walletAddress = useSelector((state) => state?.wallet);
 
-  const handlePercentageChange = (e) => {
-    const value = e.target.value;
+  const handlePercentageChange = (value) => {
     if (value === "Custom") {
       setCustomPercentageSelected(true);
       setPercentage(""); // Reset percentage value
@@ -29,8 +28,7 @@ const RemoveLiquidity = () => {
     }
   };
 
-  const handleDeadlineChange = (e) => {
-    const value = e.target.value;
+  const handleDeadlineChange = (value) => {
     if (value === "Custom") {
       setCustomDeadlineSelected(true);
       setDeadline(""); // Reset deadline value
@@ -41,10 +39,19 @@ const RemoveLiquidity = () => {
   };
 
   const handleRemoveClick = async () => {
+    if(!walletAddress?.address){
+      toast.error("Please connect your wallet");
+      return;
+    }
     const percentageValue = customPercentageSelected
       ? customPercentage
       : percentage;
     const deadlineValue = customDeadlineSelected ? customDeadline : deadline;
+    if(!percentageValue ||!deadlineValue){
+      toast.error("Please enter percentage and deadline");
+      return;
+    }
+
     let totalLiquidity;
 
     try {
@@ -117,20 +124,24 @@ const RemoveLiquidity = () => {
   };
 
   return (
-    <div className="flex pt-20 md:pt-12 lg:pt-12 min-h-screen flex-col items-center px-4 text-white">
+    <div className="flex pt-20 md:pt-12 lg:pt-12 min-h-screen flex-col items-center mt-40 px-4 text-white">
       <div className="w-full max-w-md bg-[#1B1B1B] p-6 rounded-lg shadow-lg">
         <label className="block mb-2 text-lg font-semibold">Percentage</label>
-        <select
-          value={customPercentageSelected ? "Custom" : percentage}
-          onChange={handlePercentageChange}
-          className="block w-full p-2 mb-4 bg-gray-600 border border-gray-600 rounded"
-        >
-          <option value="25">25%</option>
-          <option value="50">50%</option>
-          <option value="75">75%</option>
-          <option value="100">100%</option>
-          <option value="Custom">Custom</option>
-        </select>
+        <div className="flex flex-wrap mb-4 space-x-2">
+          {["25", "50", "75", "100", "Custom"].map((value) => (
+            <div
+              key={value}
+              className={`p-2 mb-2 rounded cursor-pointer text-center flex-1 ${
+                percentage === value || (customPercentageSelected && value === "Custom")
+                  ? "bg-yellow-500 text-black"
+                  : "bg-gray-600 text-white"
+              }`}
+              onClick={() => handlePercentageChange(value)}
+            >
+              <p>{value === "Custom" ? "Custom" : `${value}%`}</p>
+            </div>
+          ))}
+        </div>
         {customPercentageSelected && (
           <input
             type="text"
@@ -148,16 +159,21 @@ const RemoveLiquidity = () => {
         )}
 
         <label className="block mb-2 text-lg font-semibold">Deadline</label>
-        <select
-          value={customDeadlineSelected ? "Custom" : deadline}
-          onChange={handleDeadlineChange}
-          className="block w-full p-2 mb-4 bg-gray-600 border border-gray-600 rounded"
-        >
-          <option value="5">5 min</option>
-          <option value="10">10 min</option>
-          <option value="15">15 min</option>
-          <option value="Custom">Custom</option>
-        </select>
+        <div className="flex flex-wrap mb-4 space-x-2">
+          {["5", "10", "15", "Custom"].map((value) => (
+            <div
+              key={value}
+              className={`p-2 mb-2 rounded cursor-pointer text-center flex-1 ${
+                deadline === value || (customDeadlineSelected && value === "Custom")
+                  ? "bg-yellow-500 text-black"
+                  : "bg-gray-600 text-white"
+              }`}
+              onClick={() => handleDeadlineChange(value)}
+            >
+              <p>{value === "Custom" ? "Custom" : `${value} min`}</p>
+            </div>
+          ))}
+        </div>
         {customDeadlineSelected && (
           <input
             type="text"
@@ -177,7 +193,6 @@ const RemoveLiquidity = () => {
         <button
           className="w-full p-2 text-black bg-[#F3BB1B] font-bold hover:bg-yellow-500 rounded"
           onClick={handleRemoveClick}
-          disabled={!percentage || !deadline} // Disable button if percentage or deadline is empty
         >
           Remove
         </button>
