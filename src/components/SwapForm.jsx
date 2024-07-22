@@ -104,7 +104,7 @@ const SwapForm = () => {
 
   useEffect(() => {
     const fetchSwapAmount = async () => {
-      if (fromAmount > 1000) {
+      if (fromAmount > 5000) {
         toast.error("Limit exceeded");
         return;
       }
