@@ -30,7 +30,7 @@ const Pool = () => {
               </button>
               <div className="flex justify-between items-center w-full md:w-2/3 mt-2">
                 <p className="text-white font-medium whitespace-nowrap">Your Liquidity</p>
-             <Link to="/pool/removeliquidity"><p className="font-light cursor-pointer text-yellow-400 underline whitespace-nowrap">Remove Liquidity</p></Link>
+             {/* <Link to="/pool/removeliquidity"><p className="font-light cursor-pointer text-yellow-400 underline whitespace-nowrap">Remove Liquidity</p></Link> */}
               </div>
               <div className="flex justify-center items-center mt-10 space-x-4">
                 <button className="font-bold relative inline-flex items-center justify-center px-10 py-4 overflow-hidden
@@ -46,7 +46,30 @@ const Pool = () => {
               </div>
             </div>
           ) : (
-            <PoolForm />
+            // <PoolForm />
+            <div
+            className="h-screen w-full flex items-center justify-center text-center px-5 bg-black"
+          >
+            <div className="flex flex-col justify-center text-white w-full">
+              <h1 className="text-5xl">
+                We are <b>Almost</b> there!
+              </h1>
+              <p>Stay tuned for something amazing!!!</p>
+        
+              <div className="mt-10 mb-5">
+                <div className="shadow w-full bg-white mt-2 max-w-2xl mx-auto rounded-full">
+                  <div
+                    className="rounded-full bg-yellow-400 text-base leading-none text-center text-black font-bold py-1"
+                    style={{ width: '75%' }}
+                  >
+                    75%
+                  </div>
+                </div>
+              </div>
+        
+        
+            </div>
+          </div>
           )}
       </div>
 
