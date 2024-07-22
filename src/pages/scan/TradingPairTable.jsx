@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getTradingPair } from "../../utils/Axios";
 
-const TradingPairTable = ({ liquidity }) => {
+const TradingPairTable = ({ liquidityPOX, liquidityUSDX }) => {
   const navigate = useNavigate();
   const [volume24hr, setVolume24hr] = useState("");
   const [volume7hr, setVolume7hr] = useState("");
@@ -69,7 +69,7 @@ const TradingPairTable = ({ liquidity }) => {
         <div className="text-black bg-white font-medium rounded-b-xl flex flex-row justify-between items-center p-4 border-b-[1px]">
           <p className="w-[16%] pl-2 md:pl-8">POX/USDX</p>
           <p className="text-center w-[16%]">
-            $ {liquidity}/$ {liquidity}
+            $ {liquidityPOX}/$ {liquidityUSDX}
           </p>
           <p className="w-[16%] text-center">$ {volume24hr}</p>
           <p className="w-[16%] text-center">$ {volume7hr}</p>

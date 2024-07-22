@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const HotTokensTable = ({ liquidity, volume, poxPrice }) => {
+const HotTokensTable = ({ liquidityPOX, liquidityUSDX, volumePOX, volumeUSDX, poxPrice }) => {
   const navigate = useNavigate();
 
   const ActionBodyTemplate = () => {
@@ -36,8 +36,8 @@ const HotTokensTable = ({ liquidity, volume, poxPrice }) => {
 
         <div className="text-black bg-white font-medium flex flex-row justify-between items-center p-4 border-b-[1px]">
           <p className="w-[16%] pl-2 md:pl-8">POX</p>
-          <p className="text-center w-[16%]">$ {liquidity}</p>
-          <p className="w-[16%] text-center">${volume}</p>
+          <p className="text-center w-[16%]">$ {liquidityPOX}</p>
+          <p className="w-[16%] text-center">${volumePOX}</p>
           <p className="w-[16%] text-center">00</p>
           <p className="w-[16%] text-center">$ {poxPrice}</p>
           <div className="w-[20%] flex justify-end">
@@ -47,8 +47,8 @@ const HotTokensTable = ({ liquidity, volume, poxPrice }) => {
 
         <div className="text-black bg-white font-medium rounded-b-xl flex flex-row justify-between items-center p-4 border-b-[1px]">
           <p className="w-[16%] pl-2 md:pl-8">USDX</p>
-          <p className="text-center w-[16%]">$ {liquidity}</p>
-          <p className="w-[16%] text-center">${volume}</p>
+          <p className="text-center w-[16%]">$ {liquidityUSDX}</p>
+          <p className="w-[16%] text-center">${volumeUSDX}</p>
           <p className="w-[16%] text-center">00</p>
           <p className="w-[16%] text-center">$ 1</p>
           <div className="w-[20%] flex justify-end">
