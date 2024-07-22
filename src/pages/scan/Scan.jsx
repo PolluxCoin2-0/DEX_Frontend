@@ -1,51 +1,30 @@
-import AreaChartComp from "../components/AreaChartComp";
-import Search from "../components/Search";
-import TableCom from "../components/TableCom";
-import PolicyOptions from "../components/PolicyOptions";
-import SwitchComp from "../components/SwitchComp";
+import AreaChartComp from "../../components/AreaChartComp";
+import Search from "../../components/Search";
+import PolicyOptions from "../../components/PolicyOptions";
+import SwitchComp from "../../components/SwitchComp";
 import { useEffect, useState } from "react";
 import {
   getPairLength,
   getReserves,
   getScanLiquidityGraphData,
   getScanVolumeGraphData,
-} from "../utils/Axios";
-import { formatNumberWithCommas } from "../utils/formatNumberWithCommas";
-
-const hotTokens = [
-  "Name",
-  "Liquidity",
-  "Volume (24hr)",
-  "Price",
-  "Price Change (24hr)",
-  "Actions",
-];
-
-const tradingPair = [
-  "Name",
-  "Liquidity",
-  "Volume (24hr)",
-  "Volume (7hr)",
-  "Fees (24hrs)",
-  "Actions",
-];
-
-const transctions = [
-  "All",
-  "Total Value",
-  "Token Amount",
-  "Token Amount",
-  "Account",
-  "Time",
-];
+  getTotalTransactionsLast24Hours,
+} from "../../utils/Axios";
+import { formatNumberWithCommas } from "../../utils/formatNumberWithCommas";
+import HotTokensTable from "./HotTokensTable";
+import TradingPairTable from "./TradingPairTable";
+import Transactions from "./Transactions";
 
 const Scan = () => {
   const [data, setData] = useState({});
   const [pairLength, setPairLength] = useState(0);
-  const [scanLiquidityGraphDataArray, setScanLiquidityGraphDataArray] = useState([]);
+  const [scanLiquidityGraphDataArray, setScanLiquidityGraphDataArray] =
+    useState([]);
   const [scanVolumeGraphDataArray, setScanVolumeGraphDataArray] = useState([]);
-  const [selectedInterval, setSelectedInterval] = useState('daily');
-   
+  const [selectedInterval, setSelectedInterval] = useState("daily");
+  const [totalTransactionsLast24Hours, setTotalTransactionsLast24Hours] =
+    useState("");
+
   useEffect(() => {
     const fetchdata = async () => {
       const data = await getReserves();
@@ -55,7 +34,7 @@ const Scan = () => {
 
       // Function to format date as 'MMM DD YYYY'
       function formatDate(date) {
-        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month and pad with zero if needed
+        const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Get month and pad with zero if needed
         const day = date.getDate();
         const year = date.getFullYear();
         return `${month}/${day}/${year}`;
@@ -64,8 +43,6 @@ const Scan = () => {
       // Get current date
       const currentDate = new Date();
       const formattedCurrentDate = formatDate(currentDate);
-
-      console.log(formattedCurrentDate)
 
       // Get date a month before
       const previousMonthDate = new Date();
@@ -88,6 +65,11 @@ const Scan = () => {
       );
       console.log(volumeGraphData);
       setScanVolumeGraphDataArray(volumeGraphData);
+
+      // Function for total transactions last 24 hours data
+      const totalTransactionsLast24HoursData =
+        await getTotalTransactionsLast24Hours();
+      console.log(totalTransactionsLast24HoursData);
     };
     fetchdata();
   }, [selectedInterval]);
@@ -122,7 +104,9 @@ const Scan = () => {
           <p className="pl-4 pb-3">Liquidity</p>
           <div className="flex items-center space-x-4">
             <p className="text-lg font-medium pl-4">
-              $ {data?.reserve1 && formatNumberWithCommas(data?.reserve1)}
+              ${" "}
+              {data?.reserve1 &&
+                formatNumberWithCommas(Number(data?.reserve1).toFixed(6))}
             </p>
             <p className="text-green-500">+0.52%</p>
           </div>
@@ -136,7 +120,7 @@ const Scan = () => {
               <p className="text-green-500">+0.52%</p>
             </div>
             <div>
-              <SwitchComp setSelectedInterval={setSelectedInterval}/>
+              <SwitchComp setSelectedInterval={setSelectedInterval} />
             </div>
           </div>
           <AreaChartComp value={""} />
@@ -146,19 +130,34 @@ const Scan = () => {
       {/* Hot Tokens */}
       <div className="pl-4">
         <p className="font-medium text-lg mt-6 mb-2 text-white">Hot Tokens</p>
-        <TableCom tableType="hottokens" attributesArray={hotTokens} />
+        <HotTokensTable
+          liquidity={
+            data?.reserve1 &&
+            formatNumberWithCommas(Number(data?.reserve1).toFixed(6))
+          }
+          volume={
+            data?.reserve1 &&
+            formatNumberWithCommas(Number(data?.reserve1).toFixed(6) * 2)
+          }
+          poxPrice={data?.pricePOX && Number(data?.pricePOX).toFixed(6)}
+        />
       </div>
 
       {/* Trading Pair */}
       <div className="pl-4">
         <p className="font-medium text-lg mt-6 mb-2 text-white">Trading Pair</p>
-        <TableCom tableType="tradingpair" attributesArray={tradingPair} />
+        <TradingPairTable
+          liquidity={
+            data?.reserve1 &&
+            formatNumberWithCommas(Number(data?.reserve1).toFixed(6))
+          }
+        />
       </div>
 
       {/* Transactions */}
       <div className="pl-4">
         <p className="font-medium text-lg mt-6 mb-2 text-white">Transactions</p>
-        <TableCom tableType="transactions" attributesArray={transctions} />
+        <Transactions />
       </div>
       <PolicyOptions />
     </div>
