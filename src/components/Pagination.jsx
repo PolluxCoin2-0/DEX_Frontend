@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import  { useState, useMemo } from 'react';
 
 const Pagination = ({ totalRecords, recordsPerPage, setPageNo }) => {
   const totalPages = useMemo(() => Math.ceil(totalRecords / recordsPerPage), [totalRecords, recordsPerPage]);
@@ -20,7 +20,27 @@ const Pagination = ({ totalRecords, recordsPerPage, setPageNo }) => {
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
-    setPageNo(page - 1);
+    setPageNo(page);
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      if (currentPage <= 4) {
+        pageNumbers.push(1, 2, 3, 4, 5, '...', totalPages);
+      } else if (currentPage > totalPages - 4) {
+        pageNumbers.push(1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pageNumbers.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+      }
+    }
+
+    return pageNumbers;
   };
 
   return (
@@ -49,21 +69,27 @@ const Pagination = ({ totalRecords, recordsPerPage, setPageNo }) => {
         <span>Previous</span>
       </button>
       <div className="flex items-center gap-x-1">
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index + 1}
-            type="button"
-            className={`min-h-[38px] min-w-[38px] flex justify-center items-center py-2 px-3 text-sm rounded-lg focus:outline-none ${
-              currentPage === index + 1
-                ? 'bg-gray-200 text-gray-800 focus:bg-gray-300 dark:bg-neutral-600 dark:text-white dark:focus:bg-neutral-500'
-                : 'text-gray-800 hover:bg-gray-100 focus:bg-gray-100 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10'
-            }`}
-            aria-current={currentPage === index + 1 ? 'page' : undefined}
-            onClick={() => handlePageClick(index + 1)}
-          >
-            {index + 1}
-          </button>
-        ))}
+        {renderPageNumbers().map((page, index) =>
+          page === '...' ? (
+            <span key={index} className="min-h-[38px] min-w-[38px] flex justify-center items-center py-2 text-sm text-white tracking-[6px]">
+              ......
+            </span>
+          ) : (
+            <button
+              key={page}
+              type="button"
+              className={`min-h-[38px] min-w-[38px] flex justify-center items-center py-2 px-3 text-sm rounded-lg focus:outline-none ${
+                currentPage === page
+                  ? 'bg-gray-200 text-gray-800 focus:bg-gray-300 dark:bg-neutral-600 dark:text-white dark:focus:bg-neutral-500'
+                  : 'text-gray-800 hover:bg-gray-100 focus:bg-gray-100 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10'
+              }`}
+              aria-current={currentPage === page ? 'page' : undefined}
+              onClick={() => handlePageClick(page)}
+            >
+              {page}
+            </button>
+          )
+        )}
       </div>
       <button
         type="button"
