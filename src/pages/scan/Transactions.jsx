@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const Transactions = () => {
   const [transactionDataArray, setTransactionArray] = useState({});
-  const [pageNo, setPageNo] = useState(0);
+  const [pageNo, setPageNo] = useState(1);
   const recordsPerPage = 10;
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const Transactions = () => {
         transactionDataArray.swapTransaction.map((item, idx) => (
           <Link to={`https://poxscan.io/transactions-detail/${item?.trxId}`} key={idx}>
             <div
-              className={`text-black bg-white font-medium flex flex-row justify-between items-center p-4 border-b-[1px] min-w-[1400px]`}
+              className={`text-black bg-white font-medium flex flex-row justify-between items-center p-4 border-b-[1px] min-w-[1400px] hover:bg-gray-100`}
             >
               <p className="w-[16%] pl-8">
                 {item?.fromSymbol} to {item?.toSymbol}
@@ -48,7 +48,7 @@ const Transactions = () => {
           </Link>
         ))}
 
-      <div className="bg-[#1B1B1B] rounded-b-xl min-w-[1400px] flex justify-start md:justify-center">
+      <div className="bg-[#1B1B1B] rounded-b-xl min-w-[1400px] flex justify-start md:justify-center overflow-auto">
         <Pagination
           totalRecords={transactionDataArray?.totalRecords || 0}
           recordsPerPage={recordsPerPage}
