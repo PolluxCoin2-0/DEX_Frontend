@@ -7,7 +7,7 @@ pipeline {
             steps { 
          git branch: 'main', credentialsId: 'gitscm', url: 'https://github.com/PolluxCoin2-0/DEX_Frontend.git'
             }
-        }
+        } 
         
         
 
