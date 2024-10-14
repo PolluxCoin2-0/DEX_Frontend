@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Github Checkout') {
             steps { 
-               git branch: 'main', credentialsId: 'github-auth', url: 'https://github.com/PolluxCoin2-0/DEX_Frontend.git'
+               git branch: 'main', url: 'https://github.com/PolluxCoin2-0/DEX_Frontend.git'
             }
         }
         
