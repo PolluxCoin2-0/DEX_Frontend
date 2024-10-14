@@ -9,15 +9,7 @@ pipeline {
             }
         }
         
-        stage('Copy .env file') { 
-            steps { 
-                script {
-                    configFileProvider([configFile(fileId: 'dex-frontend-env-file', variable: 'ENV_FILE')]) {
-                        sh 'cp "$ENV_FILE" /home/jenkins/workspace/dex-frontend-prod-cicd-pipeline/.env'
-                    }
-                }
-            }
-        }
+        
 
         stage('Installing Dependencies') {
             steps {
